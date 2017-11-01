@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SpotiMaster</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<div class="page-header">
+		<h1>SpotiMaster <small>Artist information and events all on one page</small></h1>
+	</div>
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<form class="navbar-form navbar-right" role="search">
+				<div class="form-group">
+					<span>Search artist name and zip code </span>  
+					<input type="text" class="form-control" id="artist-name" placeholder="Artist Name">
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" id="zip-code" placeholder="Zip Code">
+				</div>
+			<button type="submit" class="btn btn-default" id="nav-submit">Submit</button>
+			</form>
+			<form class="navbar-form navbar-left" role="log-in">
+				<div class="form-group">
+					<input type="text" class="form-control" id="username" placeholder="Username">
+				</div>
+				<div class="form-group">
+					<input type="password" class="form-control" id="password" placeholder="Password">
+				</div>
+				<button type="submit" class="btn btn-default" id="user-submit">Submit</button>
+			</form>
+
+		</div>
+	</nav>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-4">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-body" id="artist-fav">
+								Favorite Artists
+							</div>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-body" id="event-fav">
+								Saved Events
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-8">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-body" id="artist-info">
+								Artist Information
+							</div>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="panel panel-default" id="event-info">
+							<div class="panel-body">
+								Ticketmaster Information
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer class="container-fluid">
+		<p>Footer Text</p>
+	</footer>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script type="text/javascript" src="javascript/main.js"></script>
+</body>
+</html>
