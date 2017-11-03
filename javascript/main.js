@@ -8,5 +8,54 @@ var config = {
   };
   firebase.initializeApp(config);
 
+var database = firebase.database();
 
- 
+var username = "";
+
+$("#user-submit").on("click", function() {
+	event.preventDefault();
+
+	//get username and password
+	username = $("#username").val().trim();
+	$("#username").hide();
+	$("#user-submit").hide();
+	$("#logged-in").show().append(username);
+	$("#user-logout").show();
+
+
+})
+
+$("#user-logout").on("click",function(){
+	$("#username").show();
+	$("#user-submit").show();
+	$("#logged-in").hide();
+	username = null;
+	database.ref().set({
+		username: false
+
+	})
+
+})
+
+
+
+database.ref().on("value", function(snapshot){
+	snapshot.forEach(function(childSnapshot){
+		var favoriteArtistArray = childSnapshot.val().favoriteArtist;
+		
+		if (username == childSnapshot.val().username){
+			for (var i = 0; i < favoriteArtistArray.length; i++) {
+				console.log(favoriteArtistArray[i])
+				$("#artist-fav").append("<div>" + favoriteArtistArray[i] + "</div>")
+		}
+	}
+})});
+
+// database.ref().on("value", function(snapshot){
+// 	snapshot.forEach(function(childSnapshot){
+// 		if (username = chilSnapshot.val().username && password) {
+
+// 		}
+
+// 	});
+// });
