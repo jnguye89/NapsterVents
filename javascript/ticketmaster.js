@@ -5,15 +5,10 @@ var artistNameIn;
 var zipCodeIn;
 var tmRootQueryURL = "https://app.ticketmaster.com/discovery/v2/";
 var tmApiKey = "Q60tg8AuoiJG7UpD8Lk2jUH1vutlxRd0";
-var tmEventIDs = [];
 var tmEventHTML = "";
 
 // Add an on-click event listener for the Search button	
 $("#nav-submit").on("click", function(event) {
-
-
-	// Remove all elements from the event id array
-	tmEventIDs.splice(0, tmEventIDs.length);
 
 	artistNameIn = $("#artist-name").val().trim();
 	zipCodeIn = $("#zip-code").val().trim();
@@ -69,7 +64,6 @@ function getTicketmasterInfo() {
 function displayEvents(tmEvents) {
 
 	var i = 0;
-	var eventOnSale = 0;
 	var tmEventState = "";
 
 	$(".table").empty();
@@ -107,11 +101,6 @@ function displayEvents(tmEvents) {
 			}
 			// console.log("tmEventState: ", tmEventState);
 
-			// console.log("Event ID: ", tmEvents._embedded.events[i].id);
-			tmEventIDs[eventOnSale] = tmEvents._embedded.events[i].id;
-
-			eventOnSale ++;
-
 			// console.log("Event URL: ", tmEvents._embedded.events[i].url);
 
 			// Build the HTML to display the Ticketmaster music event information
@@ -125,8 +114,6 @@ function displayEvents(tmEvents) {
 			tmEventHTML	+= "</tr>";
 		}
 	}
-
-	console.log("tmEventIDs: ", tmEventIDs);
 
 	tmEventHTML += "</tbody>";
 	tmEventHTML += "</table>";
