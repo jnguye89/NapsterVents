@@ -6,6 +6,10 @@ var genreList = [];
 $("#nav-submit").on("click", function(event) {
         event.preventDefault();
 
+        // Clear old data from artist info divs
+        $("#artist-pic").empty();
+        $("#artist-info").empty();
+
         // Get artist NAME from user
         artist = $("#artist-name").val().trim();
 
@@ -23,10 +27,18 @@ $("#nav-submit").on("click", function(event) {
 	      url: queryURL,
 	      method: "GET"
 	    }).done(function(response) {
-
-	    	// Display artist NAME
-	      	var artistName = response.artists[0].name;
-	      	$("#artist-info").html("<h2>"+artistName);
+	    	
+	    	console.log(response.artists);
+	    	
+	    	if (response.artists.length < 1){
+	    		$("#artist-info").html("<h2>Sorry, we could not find information on that artist.</h2>");
+	    	}
+	    	else{
+	    		var artistName = response.artists[0].name;
+      			$("#artist-info").html("<h2>"+artistName);
+	    	}
+    		
+	      	
 
 	      	// Display list of artist BLURBS
 	      	var blurb = response.artists[0].blurbs;
