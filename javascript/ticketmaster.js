@@ -8,24 +8,21 @@ var tmApiKey = "Q60tg8AuoiJG7UpD8Lk2jUH1vutlxRd0";
 var tmEventIDs = [];
 var tmEventHTML = "";
 
-// $( document ).ready(function() {
-  
-	// Add an on-click event listener for the Search button	
-	$("#nav-submit").on("click", function(event) {
+// Add an on-click event listener for the Search button	
+$("#nav-submit").on("click", function(event) {
 
 
-		// Remove all elements from the event id array
-		tmEventIDs.splice(0, tmEventIDs.length);
+	// Remove all elements from the event id array
+	tmEventIDs.splice(0, tmEventIDs.length);
 
-		artistNameIn = $("#artist-name").val().trim();
-		zipCodeIn = $("#zip-code").val().trim();
+	artistNameIn = $("#artist-name").val().trim();
+	zipCodeIn = $("#zip-code").val().trim();
 
-		// Either the artist name or zip code must be entered
-		if (artistNameIn !== "" || zipCodeIn !== "") {
-			tmEvents = getTicketmasterInfo();
-		}
-	})
-// })
+	// Either the artist name or zip code must be entered
+	if (artistNameIn !== "" || zipCodeIn !== "") {
+		tmEvents = getTicketmasterInfo();
+	}
+})
 
 // Get the music events from Ticketmaster
 function getTicketmasterInfo() {
@@ -37,7 +34,7 @@ function getTicketmasterInfo() {
 	// The results are sorted by event date
 	tmQueryURL = tmRootQueryURL + "events.json?apikey=" + tmApiKey
 															+ "&source=ticketmaster"
-															// + "&size=5"
+															+ "&radius=50"
 											 	   		+ "&classificationName=music"
 												   		+ "&sort=date,asc"
 												   		+ "&keyword=" + artistNameIn
@@ -124,7 +121,7 @@ function displayEvents(tmEvents) {
 			tmEventHTML	+= "<td>" + tmEvents._embedded.events[i]._embedded.venues[0].city.name + ", " + tmEventState + "</td>";
 			tmEventHTML	+= "<td>" + tmEvents._embedded.events[i].dates.start.localDate + "</td>";
 			tmEventHTML	+= "<td><a href=" + tmEvents._embedded.events[i].url + " target=_blank>Ticketmaster Info</a></td>";
-			tmEventHTML += "<td><button type='submit' class='btn btn-default' id='save-event-submit' onclick='saveEvent()'>Save Event</button></td>";
+			tmEventHTML += "<td><button type='submit' class='btn btn-default' id='save-event-submit' data-event-artist='" + tmEvents._embedded.events[i].name + "' data-event-id='" + tmEvents._embedded.events[i].id + "' onclick='saveEvent()'>Save Event</button></td>";
 			tmEventHTML	+= "</tr>";
 		}
 	}
@@ -135,6 +132,7 @@ function displayEvents(tmEvents) {
 	tmEventHTML += "</table>";
 
 	// Add the Ticketmaster music event information to the web page HTML
+	console.log("tmEventHTML: ", tmEventHTML);
 	$("#event-info").append(tmEventHTML);
 }
 
