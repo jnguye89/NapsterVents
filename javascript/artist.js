@@ -37,7 +37,9 @@ $("#nav-submit").on("click", function(event) {
 	    	else{
 	    		var artistName = response.artists[0].name;
       			$("#artist-name").html("<h2>"+artistName);
-      			$("#artist-button").html("<button class='btn btn-primary btn-block' type='button' data-artist = '"+artistName+"' id='nav-submit'>Make Favorite</button>");
+
+      			$("#artist-button").html("<button class='btn btn-primary btn-block' type='button' data-artist = '"+artistName+"' id='artist-submit'>Make Favorite</button>");
+	    		favoriteButton();
 	    	}
     		
 	      	
@@ -99,3 +101,5 @@ $("#nav-submit").on("click", function(event) {
 
       	});
 	});
+
+

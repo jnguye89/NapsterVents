@@ -28,6 +28,7 @@ $("#user-submit").on("click", function() {
 		snapshot.forEach(function(childSnapshot){
 			if (username == childSnapshot.val().username){
 				var favoriteArtistArray = childSnapshot.val().favoriteArtist;
+				$("#artist-fav").html("Favorite Artists");
 				for (var i = 0; i < favoriteArtistArray.length; i++) {
 					console.log(favoriteArtistArray[i])
 					$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
@@ -37,6 +38,7 @@ $("#user-submit").on("click", function() {
 		})
 	});
 })
+
 
 $("#newuser-submit").on("click", function(){
 	event.preventDefault();
@@ -50,7 +52,8 @@ $("#newuser-submit").on("click", function(){
 
 	database.ref().push({
 		username: username,
-		favoriteArtist: ["Beyonce", "Red Hot Chili Peppers", "John Legend"],
+
+		
 	})
 
 
@@ -64,6 +67,35 @@ $("#user-logout").on("click",function(){
 
 })
 
+var favoriteButton = function() {
+		$("#artist-submit").on("click", function(){
+			console.log("button pressed");
+			var artistName = $(this).attr("data-artist");
+			console.log(artistName);
+			database.ref().once("value", function(snapshot){
+				snapshot.forEach(function(childSnapshot){
+					var favoriteArtistArray = [];
+					console.log(childSnapshot.key);
+					if (username == childSnapshot.val().username){
+
+						favoriteArtistArray = childSnapshot.val().favoriteArtist;
+						favoriteArtistArray.push(artistName);
+						$("#artist-fav").html("Favorite Artists");
+						for (var i = 0; i < favoriteArtistArray.length; i++) {						
+							$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
+						}
+					}
+					console.log(favoriteArtistArray);
+					// database.ref().set({
+					// 	favoriteArtist: favoriteArtistArray,
+					// // })
+					database.ref(childSnapshot.key).update({
+						favoriteArtist: favoriteArtistArray,
+					})
+				})
+		})
+	})
+}
 
 
 
