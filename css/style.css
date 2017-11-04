@@ -16,4 +16,5 @@ footer {
 	padding: 5px;
 	font-weight: 900;
 	text-decoration: underline;
+	cursor: pointer;
 }

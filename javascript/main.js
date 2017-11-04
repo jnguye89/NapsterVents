@@ -52,6 +52,7 @@ $("#newuser-submit").on("click", function(){
 
 	database.ref().push({
 		username: username,
+		favoriteArtist: ["Beyonce", "Red Hot Chili Peppers"],
 
 		
 	})
@@ -84,14 +85,15 @@ var favoriteButton = function() {
 						for (var i = 0; i < favoriteArtistArray.length; i++) {						
 							$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
 						}
+						database.ref(childSnapshot.key).update({
+							favoriteArtist: favoriteArtistArray,
+						})
 					}
 					console.log(favoriteArtistArray);
 					// database.ref().set({
 					// 	favoriteArtist: favoriteArtistArray,
 					// // })
-					database.ref(childSnapshot.key).update({
-						favoriteArtist: favoriteArtistArray,
-					})
+					
 				})
 		})
 	})
