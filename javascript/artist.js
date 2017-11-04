@@ -4,7 +4,7 @@ var genreList = [];
 
 // Get form value
 $("#nav-submit").on("click", function(event) {
-        event.preventDefault();
+   
 
         // Clear old data from artist info divs
         $("#artist-pic").empty();

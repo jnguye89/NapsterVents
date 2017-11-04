@@ -13,7 +13,6 @@ $( document ).ready(function() {
 	// Add an on-click event listener for the Search button	
 	$("#nav-submit").on("click", function(event) {
 
-		event.preventDefault();
 
 		// Remove all elements from the event id array
 		tmEventIDs.splice(0, tmEventIDs.length);
