@@ -19,9 +19,10 @@ $("#nav-submit").on("click", function(event) {
 
         // Swap spaces with dashes
         var artistFixed = artist.split(" ").join("-");
+        var artistLower = artistFixed.toLowerCase();
 
         // Send API query to Napster
-		var queryURL = "https://api.napster.com/v2.2/artists/"+artistFixed+"?apikey=YTk0ODZlZTktNjIxMy00ZWQ1LTgwYzQtMDk5NmVjYjBlY2Vm";
+		var queryURL = "https://api.napster.com/v2.2/artists/"+artistLower+"?apikey=YTk0ODZlZTktNjIxMy00ZWQ1LTgwYzQtMDk5NmVjYjBlY2Vm";
 
 	    $.ajax({
 	      url: queryURL,
@@ -31,11 +32,12 @@ $("#nav-submit").on("click", function(event) {
 	    	console.log(response.artists);
 	    	
 	    	if (response.artists.length < 1){
-	    		$("#artist-info").html("<h2>Sorry, we could not find information on that artist.</h2>");
+	    		$("#artist-name").html("<h2>Sorry, we could not find information on that artist.</h2>");
 	    	}
 	    	else{
 	    		var artistName = response.artists[0].name;
-      			$("#artist-info").html("<h2>"+artistName);
+      			$("#artist-name").html("<h2>"+artistName);
+      			$("#artist-button").html("<button class='btn btn-primary btn-block' type='button' data-artist = '"+artistName+"' id='nav-submit'>Make Favorite</button>");
 	    	}
     		
 	      	
