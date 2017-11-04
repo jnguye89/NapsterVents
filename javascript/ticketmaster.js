@@ -8,7 +8,7 @@ var tmApiKey = "Q60tg8AuoiJG7UpD8Lk2jUH1vutlxRd0";
 var tmEventIDs = [];
 var tmEventHTML = "";
 
-$( document ).ready(function() {
+// $( document ).ready(function() {
   
 	// Add an on-click event listener for the Search button	
 	$("#nav-submit").on("click", function(event) {
@@ -25,7 +25,7 @@ $( document ).ready(function() {
 			tmEvents = getTicketmasterInfo();
 		}
 	})
-})
+// })
 
 // Get the music events from Ticketmaster
 function getTicketmasterInfo() {
