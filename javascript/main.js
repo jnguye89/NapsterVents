@@ -21,6 +21,37 @@ $("#user-submit").on("click", function() {
 	$("#user-submit").hide();
 	$("#logged-in").show().append(username);
 	$("#user-logout").show();
+	$("#newuser-submit").hide();
+
+
+	database.ref().on("value", function(snapshot){
+		snapshot.forEach(function(childSnapshot){
+			if (username == childSnapshot.val().username){
+				var favoriteArtistArray = childSnapshot.val().favoriteArtist;
+				for (var i = 0; i < favoriteArtistArray.length; i++) {
+					console.log(favoriteArtistArray[i])
+					$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
+
+				}
+			}
+		})
+	});
+})
+
+$("#newuser-submit").on("click", function(){
+	event.preventDefault();
+
+	var username = $("#username").val().trim();
+	$("#newuser-submit").hide();
+	$("#username").hide();
+	$("#user-submit").hide();
+	$("#logged-in").show().append(username);
+	$("#user-logout").show();
+
+	database.ref().push({
+		username: username,
+		favoriteArtist: ["Beyonce", "Red Hot Chili Peppers", "John Legend"],
+	})
 
 
 })
@@ -29,27 +60,12 @@ $("#user-logout").on("click",function(){
 	$("#username").show();
 	$("#user-submit").show();
 	$("#logged-in").hide();
-	username = null;
-	database.ref().set({
-		username: false
-
-	})
+	
 
 })
 
 
 
-database.ref().on("value", function(snapshot){
-	snapshot.forEach(function(childSnapshot){
-		var favoriteArtistArray = childSnapshot.val().favoriteArtist;
-		
-		if (username == childSnapshot.val().username){
-			for (var i = 0; i < favoriteArtistArray.length; i++) {
-				console.log(favoriteArtistArray[i])
-				$("#artist-fav").append("<div>" + favoriteArtistArray[i] + "</div>")
-		}
-	}
-})});
 
 // database.ref().on("value", function(snapshot){
 // 	snapshot.forEach(function(childSnapshot){
