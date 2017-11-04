@@ -12,7 +12,6 @@ var database = firebase.database();
 
 var username = "";
 
-
 $("#user-submit").on("click", function() {
 	event.preventDefault();
 
@@ -44,7 +43,7 @@ $("#user-submit").on("click", function() {
 $("#newuser-submit").on("click", function(){
 	event.preventDefault();
 
-	username = $("#username").val().trim();
+	var username = $("#username").val().trim();
 	$("#newuser-submit").hide();
 	$("#username").hide();
 	$("#user-submit").hide();
@@ -53,23 +52,9 @@ $("#newuser-submit").on("click", function(){
 
 	database.ref().push({
 		username: username,
-		favoriteArtist: [""],
+
 		
 	})
-
-	database.ref().on("value", function(snapshot){
-		snapshot.forEach(function(childSnapshot){
-			if (username == childSnapshot.val().username){
-				var favoriteArtistArray = childSnapshot.val().favoriteArtist;
-				$("#artist-fav").html("Favorite Artists");
-				for (var i = 0; i < favoriteArtistArray.length; i++) {
-					console.log(favoriteArtistArray[i])
-					$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
-
-				}
-			}
-		})
-	});
 
 
 })
@@ -79,39 +64,38 @@ $("#user-logout").on("click",function(){
 	$("#user-submit").show();
 	$("#logged-in").hide();
 	
-	username = "";
+
 })
 
 var favoriteButton = function() {
-	$("#artist-submit").on("click", function(){
-		console.log("button pressed");
-		var artistName = $(this).attr("data-artist");
-		console.log(artistName);
-		database.ref().once("value", function(snapshot){
-			snapshot.forEach(function(childSnapshot){
-				var favoriteArtistArray = [];
-				console.log(childSnapshot.key);
-				if (username == childSnapshot.val().username){
+		$("#artist-submit").on("click", function(){
+			console.log("button pressed");
+			var artistName = $(this).attr("data-artist");
+			console.log(artistName);
+			database.ref().once("value", function(snapshot){
+				snapshot.forEach(function(childSnapshot){
+					var favoriteArtistArray = [];
+					console.log(childSnapshot.key);
+					if (username == childSnapshot.val().username){
 
-					favoriteArtistArray = childSnapshot.val().favoriteArtist;
-					
-					favoriteArtistArray.push(artistName);
-					$("#artist-fav").html("Favorite Artists");
-					for (var i = 0; i < favoriteArtistArray.length; i++) {						
-						$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
+						favoriteArtistArray = childSnapshot.val().favoriteArtist;
+						favoriteArtistArray.push(artistName);
+						$("#artist-fav").html("Favorite Artists");
+						for (var i = 0; i < favoriteArtistArray.length; i++) {						
+							$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
+						}
 					}
+					console.log(favoriteArtistArray);
+					// database.ref().set({
+					// 	favoriteArtist: favoriteArtistArray,
+					// // })
 					database.ref(childSnapshot.key).update({
 						favoriteArtist: favoriteArtistArray,
 					})
-			
-				}
-				console.log(favoriteArtistArray);
-			})
+				})
 		})
 	})
 }
-
-
 
 
 
