@@ -30,10 +30,12 @@ $("#user-submit").on("click", function() {
 				var favoriteArtistArray = childSnapshot.val().favoriteArtist;
 				for (var i = 0; i < favoriteArtistArray.length; i++) {
 					console.log(favoriteArtistArray[i])
-					$("#artist-fav").append("<div>" + favoriteArtistArray[i] + "</div>")
+					$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
+
+				}
 			}
-		}
-	})});
+		})
+	});
 })
 
 $("#newuser-submit").on("click", function(){

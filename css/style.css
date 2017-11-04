@@ -7,3 +7,12 @@ footer {
 .page-header {
 	padding-left: 20px;
 }
+
+.fav-link {
+	padding: 5px;
+}
+
+.fav-link:hover {
+	padding: 5px;
+	font-weight: 900;
+}
