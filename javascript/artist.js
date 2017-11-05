@@ -2,104 +2,138 @@
 var artist;
 var genreList = [];
 
-// Get form value
+// Get form value and run artistInfo function on form submit
 $("#nav-submit").on("click", function(event) {
+
+	// Get artist NAME from user
+    artist = $("#artist-name").val().trim();
+
+    //Clear name and zip fields
+    $("#artist-name").val('');
+    $("#zip-code").val('');
+
+    // Swap spaces with dashes
+    var artistFixed = artist.split(" ").join("-");
+    var artistLower = artistFixed.toLowerCase();
    
+   	if (artistLower != ""){
+	artistInfo(artistLower);
+	}
+	else {
+		$("#artist-heading").html("<h2>No artist selected.</h2>");
+    	$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
+	}
+});
 
-        // Clear old data from artist info divs
-        $("#artist-pic").empty();
-        $("#artist-info").empty();
 
-        // Get artist NAME from user
-        artist = $("#artist-name").val().trim();
+// Get form value and run artistInfo function on favorite click
+$("#artist-fav").on("click", ".fav-artist-button", function(event) {
 
-        //Clear name and zip fields
-        $("#artist-name").val('');
-        $("#zip-code").val('');
+   	var aName = event.currentTarget.attributes[1].value;
 
-        // Swap spaces with dashes
-        var artistFixed = artist.split(" ").join("-");
-        var artistLower = artistFixed.toLowerCase();
+   	var artistFixed = aName.split(" ").join("-");
+    var artistLower = artistFixed.toLowerCase();
 
-        // Send API query to Napster
-		var queryURL = "https://api.napster.com/v2.2/artists/"+artistLower+"?apikey=YTk0ODZlZTktNjIxMy00ZWQ1LTgwYzQtMDk5NmVjYjBlY2Vm";
+	artistInfo(artistLower);
+
+});
+
+
+// Function to display artist info
+function artistInfo(artist) {
+
+    // Clear old data from artist info divs
+    $("#artist-pic").empty();
+    $("#artist-info").empty();
+
+    // Send API query to Napster
+	var queryURL = "https://api.napster.com/v2.2/artists/"+artist+"?apikey=YTk0ODZlZTktNjIxMy00ZWQ1LTgwYzQtMDk5NmVjYjBlY2Vm";
+
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).done(function(response) {
+    	
+    	console.log(response.artists);
+    	
+    	if (response.artists.length < 1){
+    		$("#artist-heading").html("<h2>Sorry, we could not find information on that artist.</h2>");
+    		$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
+    	}
+    	else{
+    		var artistName = response.artists[0].name;
+  			$("#artist-heading").html("<h2>"+artistName);
+  			$("#artist-button").html("<button class='btn btn-primary btn-block' type='button' data-artist = '"+artistName+"' id='artist-submit'>Make Favorite &nbsp;&nbsp;<span class='glyphicon glyphicon-heart-empty'></span></button>");
+    	
+		
+      	
+
+      	// Display list of artist BLURBS
+      	var blurb = response.artists[0].blurbs;
+
+      	var uList = $("<ul>");
+
+      	for (var i = 0; i < blurb.length; i++) {
+      		uList.append("<li>"+blurb[i]);
+      	}
+
+      	$("#artist-info").append(uList);
+
+
+	    
+
+      	// Do second ajax query to pull artist GENRES
+      	var genre = response.artists[0].links.genres.href;
+      	var queryURL = genre+"?apikey=YTk0ODZlZTktNjIxMy00ZWQ1LTgwYzQtMDk5NmVjYjBlY2Vm";
 
 	    $.ajax({
 	      url: queryURL,
 	      method: "GET"
-	    }).done(function(response) {
-	    	
-	    	console.log(response.artists);
-	    	
-	    	if (response.artists.length < 1){
-	    		$("#artist-name").html("<h2>Sorry, we could not find information on that artist.</h2>");
-	    	}
-	    	else{
-	    		var artistName = response.artists[0].name;
-      			$("#artist-name").html("<h2>"+artistName);
+	    }).done(function(response) {		      
+	    	$("#artist-info").append("<h4>"+"Genres: ");
 
-      			$("#artist-button").html("<button class='btn btn-primary btn-block' type='button' data-artist = '"+artistName+"' id='artist-submit'>Make Favorite</button>");
-	    		favoriteArtistButton();
-	    	}
-    		
-	      	
+	    	var uList = $("<ul>");
 
-	      	// Display list of artist BLURBS
-	      	var blurb = response.artists[0].blurbs;
-
-	      	var uList = $("<ul>");
-
-	      	for (var i = 0; i < blurb.length; i++) {
-	      		uList.append("<li>"+blurb[i]);
+	      	for (var i = 0; i < response.genres.length; i++) {
+	      	uList.append("<li>"+response.genres[i].name);		      
 	      	}
 
 	      	$("#artist-info").append(uList);
+    	});
 
-	      	// Do second ajax query to pull artist GENRES
-	      	var genre = response.artists[0].links.genres.href;
-	      	var queryURL = genre+"?apikey=YTk0ODZlZTktNjIxMy00ZWQ1LTgwYzQtMDk5NmVjYjBlY2Vm";
+    	// Do third API query to pull down an artist photo
+    	var image = response.artists[0].links.images.href
 
-		    $.ajax({
-		      url: queryURL,
-		      method: "GET"
-		    }).done(function(response) {		      
-		    	$("#artist-info").append("<h4>"+"Genres: ");
+		var queryURL = image + "?apikey=ZWZlOGIzZWQtMmJjYi00MDVkLWJjYmItNzhhNDAyM2IxMDU3";
 
-		    	var uList = $("<ul>");
+		$.ajax({
+		url: queryURL,
+		method: "GET"
+		  }).done(function(response) {
 
-		      	for (var i = 0; i < response.genres.length; i++) {
-		      	uList.append("<li>"+response.genres[i].name);		      
-		      	}
-
-		      	$("#artist-info").append(uList);
-	    	});
-
-	    	// Do third API query to pull down an artist photo
-	    	var image = response.artists[0].links.images.href
-
-			var queryURL = image + "?apikey=ZWZlOGIzZWQtMmJjYi00MDVkLWJjYmItNzhhNDAyM2IxMDU3";
-
-			$.ajax({
-			url: queryURL,
-			method: "GET"
-			  }).done(function(response) {
-
-			    var image = response.images[0].url
-
-			    var artistImage = $("<img>");
+		  	if (response.images.length < 1){
+    		$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
+    		}
+    		else{
 
 
-			    artistImage.attr("src", image);
+		    var image = response.images[0].url
 
-			    artistImage.addClass("img-responsive img-rounded");
-
-			      
-			    $("#artist-pic").html(artistImage);
-			     
-			  });
+		    var artistImage = $("<img>");
 
 
-      	});
-	});
+		    artistImage.attr("src", image);
 
+		    artistImage.addClass("img-responsive img-rounded");
 
+		      
+		    $("#artist-pic").html(artistImage);
+
+			}
+		     
+		  });
+
+		}
+  	});
+
+}
