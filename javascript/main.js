@@ -47,7 +47,7 @@ $("#user-submit").on("click", function() {
 
 
 $("#newuser-submit").on("click", function(){
-	
+	event.preventDefault();
 
 	var username = $("#username").val().trim();
 	$("#newuser-submit").hide();
