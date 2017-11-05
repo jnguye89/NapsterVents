@@ -52,6 +52,7 @@ function getTicketmasterInfo() {
 	  	}
 		  else {
 	  		displayEvents(json);
+	  		favoriteEventButton();
 	  	}
 	           },
 	  error: function(xhr, status, err) {
@@ -111,7 +112,9 @@ function displayEvents(tmEvents) {
 			tmEventHTML	+= "<td>" + tmEvents._embedded.events[i].dates.start.localDate + "</td>";
 			tmEventHTML	+= "<td><a href=" + tmEvents._embedded.events[i].url + " target=_blank>Ticketmaster Info</a></td>";
 			tmEventHTML += "<td><button type='submit' class='btn btn-default' id='save-event-submit' data-event-artist='" + tmEvents._embedded.events[i].name + "' data-event-id='" + tmEvents._embedded.events[i].id + "' onclick='saveEvent()'>Save Event</button></td>";
+			favoriteEventButton();
 			tmEventHTML	+= "</tr>";
+			
 		}
 	}
 

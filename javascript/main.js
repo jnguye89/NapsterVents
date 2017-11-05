@@ -29,12 +29,19 @@ $("#user-submit").on("click", function() {
 		snapshot.forEach(function(childSnapshot){
 			if (username == childSnapshot.val().username){
 				var favoriteArtistArray = childSnapshot.val().favoriteArtist;
+				var favoriteEventNameArray = childSnapshot.val().favoriteEventName;
+				var favoriteEventIDArray = childSnapshot.val().favoriteEventID;
 				$("#artist-fav").html("Favorite Artists");
 				for (var i = 0; i < favoriteArtistArray.length; i++) {
 					console.log(favoriteArtistArray[i])
 					$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
 
 				}
+				$("#event-fav").html("Saved Events");
+					for (var k=0; k < favoriteEventNameArray.length; k++){
+						$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "'>" + favoriteEventNameArray[k] + "</div>");
+
+					}
 			}
 		})
 	});
@@ -54,6 +61,8 @@ $("#newuser-submit").on("click", function(){
 	database.ref().push({
 		username: username,
 		favoriteArtist: [""],
+		favoriteEventName: [""],
+		favoriteEventID: [""],
 		
 	})
 
@@ -61,12 +70,20 @@ $("#newuser-submit").on("click", function(){
 		snapshot.forEach(function(childSnapshot){
 			if (username == childSnapshot.val().username){
 				var favoriteArtistArray = childSnapshot.val().favoriteArtist;
+				var favoriteEventNameArray = childSnapshot.val().favoriteEventName;
+				var favoriteEventIDArray = childSnapshot.val().favoriteEventID;
+				
 				$("#artist-fav").html("Favorite Artists");
-				for (var i = 0; i < favoriteArtistArray.length; i++) {
-					console.log(favoriteArtistArray[i])
-					$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
+					for (var i = 0; i < favoriteArtistArray.length; i++) {
+						console.log(favoriteArtistArray[i])
+						$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
 
-				}
+					}
+				$("#event-fav").html("Saved Events");
+					for (var k=0; k < favoriteEventNameArray.length; k++){
+						$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "'>" + favoriteEventNameArray[k] + "</div>");
+
+					}
 			}
 		})
 	});
@@ -82,7 +99,7 @@ $("#user-logout").on("click",function(){
 	username = "";
 })
 
-var favoriteButton = function() {
+var favoriteArtistButton = function() {
 	$("#artist-submit").on("click", function(){
 		console.log("button pressed");
 		var artistName = $(this).attr("data-artist");
@@ -111,13 +128,44 @@ var favoriteButton = function() {
 	})
 }
 
+var favoriteEventButton = function(){
+	$("#save-event-submit").on("click", function(){
+		console.log("button pressed");
+		var eventArtist = $(this).attr("data-event-artist");
+		console.log(eventArtist);
+		var eventID = $(this).attr("data-event-id");
+		database.ref().once("value", function(snapshot){
+			snapshot.forEach(function(childSnapshot){
+				var favoriteEventNameArray = [];
+				var favoriteEventIDArray = [];
+				if (username == childSnapshot.val().username){
+					favoriteEventNameArray = childSnapshot.val().favoriteEventName;
+					favoriteEventIDArray = childSnapshot.val().favoriteEventID;
 
+					favoriteEventNameArray.push(eventArtist);
+					favoriteEventIDArray.push(eventID);
+					$("#event-fav").html("Saved Events");
+					for (var k=0; k < favoriteEventNameArray.length; k++){
+						$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "'>" + favoriteEventNameArray[k] + "</div>");
+
+					}
+					database.ref(childSnapshot.key).update({
+						favoriteEventName: favoriteEventNameArray,
+						favoriteEventID: favoriteEventIDArray,
+					})
+
+				}
+			})
+		})
+	})
+
+}
 
 
 
 // database.ref().on("value", function(snapshot){
 // 	snapshot.forEach(function(childSnapshot){
-// 		if (username = chilSnapshot.val().username && password) {
+// 		if (username = childSnapshot.val().username && password) {
 
 // 		}
 
