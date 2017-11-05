@@ -12,7 +12,6 @@ var database = firebase.database();
 
 var username = "";
 
-
 $("#user-submit").on("click", function() {
 	event.preventDefault();
 
@@ -51,7 +50,7 @@ $("#user-submit").on("click", function() {
 $("#newuser-submit").on("click", function(){
 	event.preventDefault();
 
-	username = $("#username").val().trim();
+	var username = $("#username").val().trim();
 	$("#newuser-submit").hide();
 	$("#username").hide();
 	$("#user-submit").hide();
@@ -88,7 +87,6 @@ $("#newuser-submit").on("click", function(){
 		})
 	});
 
-
 })
 
 $("#user-logout").on("click",function(){
@@ -96,8 +94,9 @@ $("#user-logout").on("click",function(){
 	$("#user-submit").show();
 	$("#logged-in").hide();
 	
-	username = "";
+
 })
+
 
 var favoriteArtistButton = function() {
 	$("#artist-submit").on("click", function(){
@@ -116,7 +115,7 @@ var favoriteArtistButton = function() {
 					$("#artist-fav").html("Favorite Artists");
 					for (var i = 0; i < favoriteArtistArray.length; i++) {						
 						$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
-					}
+          }
 					database.ref(childSnapshot.key).update({
 						favoriteArtist: favoriteArtistArray,
 					})
@@ -127,7 +126,8 @@ var favoriteArtistButton = function() {
 		})
 	})
 }
-
+            
+            
 var favoriteEventButton = function(){
 	$("#save-event-submit").on("click", function(){
 		console.log("button pressed");
@@ -160,8 +160,6 @@ var favoriteEventButton = function(){
 	})
 
 }
-
-
 
 // database.ref().on("value", function(snapshot){
 // 	snapshot.forEach(function(childSnapshot){
