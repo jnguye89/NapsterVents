@@ -16,8 +16,13 @@ $("#nav-submit").on("click", function(event) {
     var artistFixed = artist.split(" ").join("-");
     var artistLower = artistFixed.toLowerCase();
    
-artistInfo(artistLower);
-
+   	if (artistLower != ""){
+	artistInfo(artistLower);
+	}
+	else {
+		$("#artist-heading").html("<h2>No artist selected.</h2>");
+    	$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
+	}
 });
 
 
