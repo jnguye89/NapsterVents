@@ -39,7 +39,7 @@ $("#nav-submit").on("click", function(event) {
       			$("#artist-name").html("<h2>"+artistName);
 
       			$("#artist-button").html("<button class='btn btn-primary btn-block' type='button' data-artist = '"+artistName+"' id='artist-submit'>Make Favorite</button>");
-	    		favoriteButton();
+	    		favoriteArtistButton();
 	    	}
     		
 	      	
