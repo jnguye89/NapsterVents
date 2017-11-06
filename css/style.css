@@ -1,5 +1,5 @@
 footer {
-      background-color: #555;
+      background-color: #56565a;
       color: white;
       padding: 15px;
     }
@@ -9,7 +9,7 @@ footer {
 	padding-top: 20px;
 	background-image: url('../images/NapsterVents-logo.gif');
     background-repeat: no-repeat;
-    background-attachment: fixed;
+/*    background-attachment: fixed;*/
     background-position: 10px 0; 
     margin: 0;
     background-color: #eee;
@@ -28,4 +28,38 @@ footer {
 
 h1 {
 	margin-left: 120px;
+	color: #2f44b4;
+	font-family: 'Raleway', sans-serif;
+}
+
+h2 {
+	margin-top: 10px;
+	margin-bottom: 0;
+}
+h1 small {
+	color: #62bb47;
+}
+
+.artist-container {
+	background-color: #e2e2e9;
+}
+
+#event-info .panel-body {
+	padding-top: 0;
+}
+
+.panel-heading {
+	font-family: 'Fjalla One', sans-serif;
+}
+
+th {
+	font-family: 'Fjalla One', sans-serif;
+}
+
+body {
+	background-image: url('../images/black-linen.png');
+}
+
+.panel {
+	box-shadow: 2px 2px 12px #56565a;
 }
