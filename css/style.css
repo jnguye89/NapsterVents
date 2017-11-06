@@ -1,15 +1,17 @@
 footer {
-      background-color: #56565a;
-      color: white;
-      padding: 15px;
-    }
+	background-color: #56565a;
+	color: white;
+	padding: 30px;
+	width: 100%;
+	text-align: center;
+	height: 80px;
+}
 
 .page-header {
 	height: 110px;
 	padding-top: 20px;
 	background-image: url('../images/NapsterVents-logo.gif');
     background-repeat: no-repeat;
-/*    background-attachment: fixed;*/
     background-position: 10px 0; 
     margin: 0;
     background-color: #eee;
