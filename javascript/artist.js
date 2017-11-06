@@ -11,13 +11,13 @@ $("#nav-submit").on("click", function(event) {
     //Clear name and zip fields
     $("#artist-name").val('');
     $("#zip-code").val('');
-
+    console.log(artist);
     // Swap spaces with dashes
-    var artistFixed = artist.split(" ").join("-");
-    var artistLower = artistFixed.toLowerCase();
+    // var artistFixed = artist.split(" ").join("-");
+    // var artistLower = artistFixed.toLowerCase();
    
-   	if (artistLower != ""){
-	artistInfo(artistLower);
+   	if (artist != ""){
+	artistInfo(artist);
 	}
 	else {
 		$("#artist-heading").html("<h2>No artist selected.</h2>");
@@ -46,30 +46,33 @@ function artistInfo(artist) {
     $("#artist-pic").empty();
     $("#artist-info").empty();
 
-    // Send API query to Napster
-	var queryURL = "https://api.napster.com/v2.2/artists/"+artist+"?apikey=YTk0ODZlZTktNjIxMy00ZWQ1LTgwYzQtMDk5NmVjYjBlY2Vm";
+    var artistEncoded = encodeURIComponent(artist);
+    console.log(artistEncoded);
 
+    // Send API query to Napster
+	var queryURL = "https://api.napster.com/v2.2/search?apikey=YTk0ODZlZTktNjIxMy00ZWQ1LTgwYzQtMDk5NmVjYjBlY2Vm&query="+artistEncoded+"&type=artist";
+	console.log(queryURL);
     $.ajax({
       url: queryURL,
       method: "GET"
     }).done(function(response) {
     	
-    	console.log(response.artists);
+    	console.log(response);
     	
-    	if (response.artists.length < 1){
+    	if (response.search.data.artists.length < 1){
     		$("#artist-heading").html("<h2>Sorry, we could not find information on that artist.</h2>");
     		$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
     	}
     	else{
-    		var artistName = response.artists[0].name;
+    		var artistName = response.search.data.artists[0].name;
   			$("#artist-heading").html("<h2>"+artistName);
   			$("#artist-button").html("<button class='btn btn-primary btn-block' type='button' data-artist = '"+artistName+"' id='artist-submit'>Make Favorite &nbsp;&nbsp;<span class='glyphicon glyphicon-heart-empty'></span></button>");
-    	  favoriteArtistButton(); 
+    	  	favoriteArtistButton(); 
 		
       	
 
       	// Display list of artist BLURBS
-      	var blurb = response.artists[0].blurbs;
+      	var blurb = response.search.data.artists[0].blurbs;
 
       	var uList = $("<ul>");
 
@@ -83,7 +86,7 @@ function artistInfo(artist) {
 	    
 
       	// Do second ajax query to pull artist GENRES
-      	var genre = response.artists[0].links.genres.href;
+      	var genre = response.search.data.artists[0].links.genres.href;
       	var queryURL = genre+"?apikey=YTk0ODZlZTktNjIxMy00ZWQ1LTgwYzQtMDk5NmVjYjBlY2Vm";
 
 	    $.ajax({
@@ -102,7 +105,7 @@ function artistInfo(artist) {
     	});
 
     	// Do third API query to pull down an artist photo
-    	var image = response.artists[0].links.images.href
+    	var image = response.search.data.artists[0].links.images.href
 
 		var queryURL = image + "?apikey=ZWZlOGIzZWQtMmJjYi00MDVkLWJjYmItNzhhNDAyM2IxMDU3";
 
