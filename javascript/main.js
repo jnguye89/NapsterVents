@@ -30,12 +30,12 @@ $("#user-submit").on("click", function() {
 				var favoriteArtistArray = childSnapshot.val().favoriteArtist;
 				var favoriteEventNameArray = childSnapshot.val().favoriteEventName;
 				var favoriteEventIDArray = childSnapshot.val().favoriteEventID;
-				$("#artist-fav").html("Favorite Artists");
+				
 				for (var i = 0; i < favoriteArtistArray.length; i++) {
 					console.log(favoriteArtistArray[i])
 					$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
 				}
-				$("#event-fav").html("Saved Events");
+				
 				for (var k=0; k < favoriteEventNameArray.length; k++){
 					$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "'>" + favoriteEventNameArray[k] + "</div>");
 
@@ -70,12 +70,11 @@ $("#newuser-submit").on("click", function(){
 				var favoriteArtistArray = childSnapshot.val().favoriteArtist;
 				var favoriteEventNameArray = childSnapshot.val().favoriteEventName;
 				var favoriteEventIDArray = childSnapshot.val().favoriteEventID;
-				$("#artist-fav").html("Favorite Artists");
+				
 				for (var i = 0; i < favoriteArtistArray.length; i++) {
 					console.log(favoriteArtistArray[i])
 					$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
 				}
-				$("#event-fav").html("Saved Events");
 				for (var k=0; k < favoriteEventNameArray.length; k++){
 					$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "'>" + favoriteEventNameArray[k] + "</div>");
 
@@ -109,7 +108,7 @@ var favoriteArtistButton = function() {
 					favoriteArtistArray = childSnapshot.val().favoriteArtist;
 					
 					favoriteArtistArray.push(artistName);
-					$("#artist-fav").html("Favorite Artists");
+					
 					for (var i = 0; i < favoriteArtistArray.length; i++) {						
 						$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
           }
@@ -141,7 +140,7 @@ var favoriteEventButton = function(){
 
 					favoriteEventNameArray.push(eventArtist);
 					favoriteEventIDArray.push(eventID);
-					$("#event-fav").html("Saved Events");
+				
 					for (var k=0; k < favoriteEventNameArray.length; k++){
 						$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "'>" + favoriteEventNameArray[k] + "</div>");
 
