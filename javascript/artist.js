@@ -66,7 +66,7 @@ function artistInfo(artist) {
     	else{
     		var artistName = response.search.data.artists[0].name;
   			$("#artist-heading").html("<h2>"+artistName);
-  			$("#artist-button").html("<button class='btn btn-primary btn-block' type='button' data-artist = '"+artistName+"' id='artist-submit'>Make Favorite &nbsp;&nbsp;<span class='glyphicon glyphicon-heart-empty'></span></button>");
+  			$("#artist-button").html("<button class='btn btn-success btn-block' type='button' data-artist = '"+artistName+"' id='artist-submit'>Make Favorite &nbsp;&nbsp;<span class='glyphicon glyphicon-heart-empty'></span></button>");
     	  	favoriteArtistButton(); 
 		
       	
