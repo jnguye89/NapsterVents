@@ -117,7 +117,7 @@ function displayEvents(tmEvents) {
 		tmEventHTML	+= "<td><a href=" + tmEvents._embedded.events[i].url + " target=_blank>Ticketmaster</a></td>";
 		
 		if (!savedEvent) {
-			tmEventHTML += "<td><button type='button' class='btn btn-primary btn-block' data-toggle='tooltip' title='Save This Event' id='save-event-submit' data-event-artist='" + tmEvents._embedded.events[i].name + "' data-event-id='" + tmEvents._embedded.events[i].id + "'><span class='glyphicon glyphicon-heart-empty'></span></button></td>";
+			tmEventHTML += "<td><button type='button' class='btn btn-primary btn-block save-event-submit' data-toggle='tooltip' title='Save This Event' data-event-artist='" + tmEvents._embedded.events[i].name + "' data-event-id='" + tmEvents._embedded.events[i].id + "'><span class='glyphicon glyphicon-heart-empty'></span></button></td>";
 		}
 
 		tmEventHTML	+= "</tr>";
@@ -178,8 +178,7 @@ function displaySavedEvent(event) {
 
  	savedEvent = true;
 
-	// tmQueryURL = tmRootQueryURL + "?id=" + tmEventId
-	tmQueryURL = tmRootQueryURL + "?id=alksdfdjf"
+	tmQueryURL = tmRootQueryURL + "?id=" + tmEventId
 															+ "&apikey=" + tmApiKey;
 
 	console.log("displaySavedEvent() tmQueryURL: ", tmQueryURL);
