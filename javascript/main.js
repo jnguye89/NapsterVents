@@ -51,9 +51,10 @@ $("#user-submit").on("click", function() {
 $("#newuser-submit").on("click", function(){
 	event.preventDefault();
 
+	$("#userExistsModal").modal({ show: false});
 	username = $("#newUsername").val().trim();
 	usernameLowercase = username.toLowerCase();
-	var usernameExists = false;
+	var usernameExists ;
 
 	database.ref().on("value", function(snapshot){
 		usernameExists = false;
@@ -74,6 +75,8 @@ $("#newuser-submit").on("click", function(){
 		$("#user-logout").show();
 		$("#sign-up-modal").hide();
 
+		 $("#signupModal").modal("hide");
+
 		database.ref().push({
 			username: usernameLowercase,
 			favoriteArtist: [""],
@@ -82,7 +85,9 @@ $("#newuser-submit").on("click", function(){
 			
 		})
 	} else {
-		alert("This username already exists, please either log-in or use a different username");
+		$("#userExistsModal").modal('show');
+		$("#newUsername").val("");
+
 	}
 })
 
@@ -122,7 +127,7 @@ var favoriteArtistButton = function() {
 						})
 			
 					} else {
-					alert("Artist already saved to favorites!");
+					$("#artistExists").modal('show');
 					} 
 				}		
 			})
@@ -162,7 +167,7 @@ var favoriteEventButton = function(){
 							favoriteEventID: favoriteEventIDArray,
 						})
 					} else {
-						alert("Event already saved");
+						$("#eventExists").modal('show');
 					}
 					
 				}
