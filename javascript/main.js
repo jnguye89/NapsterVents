@@ -32,6 +32,7 @@ $("#user-submit").on("click", function() {
 				var favoriteArtistArray = childSnapshot.val().favoriteArtist;
 				var favoriteEventNameArray = childSnapshot.val().favoriteEventName;
 				var favoriteEventIDArray = childSnapshot.val().favoriteEventID;
+				var favoriteEventArtistArray = childSnapshot.val().favoriteEventArtist;
 				$("#artist-fav").html("");
 				for (var i = 0; i < favoriteArtistArray.length; i++) {
 					console.log(favoriteArtistArray[i])
@@ -39,7 +40,7 @@ $("#user-submit").on("click", function() {
 				}
 				$("#event-fav").html("");
 				for (var k=0; k < favoriteEventNameArray.length; k++){
-					$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "'>" + favoriteEventNameArray[k] + "</div>");
+					$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "' artist-value='" + favoriteEventArtistArray[k] + "''>" + favoriteEventNameArray[k] + "</div>");
 
 				}
 			}
@@ -82,6 +83,7 @@ $("#newuser-submit").on("click", function(){
 			favoriteArtist: [""],
 			favoriteEventName: [""],
 			favoriteEventID: [""],
+			favoriteEventArtist: [""],
 			
 		})
 		$("#userExistsModal").modal({ show: false});
@@ -141,31 +143,35 @@ var favoriteEventButton = function(){
 	$(".save-event-submit").on("click", function(){ //JS
 		usernameLowercase = username.toLowerCase();
 		console.log("button pressed");
-		var eventArtist = $(this).attr("data-event-artist");
-		console.log(eventArtist);
+		var eventName = $(this).attr("data-event-artist");
+		var eventArtist = $(this).attr("data-artist-name")
 		var eventID = $(this).attr("data-event-id");
 		var eventIDExists;
 		database.ref().once("value", function(snapshot){
 			snapshot.forEach(function(childSnapshot){
 				var favoriteEventNameArray = [];
 				var favoriteEventIDArray = [];
+				var favoriteEventArtistArray = [];
 				if (usernameLowercase == childSnapshot.val().username){
 					favoriteEventNameArray = childSnapshot.val().favoriteEventName;
 					favoriteEventIDArray = childSnapshot.val().favoriteEventID;
+					favoriteEventArtistArray = childSnapshot.val().favoriteEventArtist;
 
 					eventIDExists = favoriteEventIDArray.indexOf(eventID);
 					console.log(eventIDExists);
 					if (eventIDExists === -1){
 						console.log("event doesn't exist");
-						favoriteEventNameArray.push(eventArtist);
+						favoriteEventNameArray.push(eventName);
 						favoriteEventIDArray.push(eventID);
+						favoriteEventArtistArray.push(eventArtist);
 						$("#event-fav").html("");
 						for (var k=0; k < favoriteEventNameArray.length; k++){
-							$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "'>" + favoriteEventNameArray[k] + "</div>");
+							$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "' artist-value='" + favoriteEventArtistArray[k] + "'>" + favoriteEventNameArray[k] + "</div>");
 						}
 						database.ref(childSnapshot.key).update({
 							favoriteEventName: favoriteEventNameArray,
 							favoriteEventID: favoriteEventIDArray,
+							favoriteEventArtist: favoriteEventArtistArray,
 						})
 					} else {
 						$("#eventExists").modal('show');
