@@ -53,39 +53,56 @@ $("#newuser-submit").on("click", function(){
 
 	username = $("#username").val().trim();
 	usernameLowercase = username.toLowerCase();
-	$("#newuser-submit").hide();
-	$("#username").hide();
-	$("#user-submit").hide();
-	$("#logged-in").show().append(username);
-	$("#user-logout").show();
-
-	database.ref().push({
-		username: usernameLowercase,
-		favoriteArtist: [""],
-		favoriteEventName: [""],
-		favoriteEventID: [""],
-		
-	})
+	var usernameExists;
 
 	database.ref().on("value", function(snapshot){
+		usernameExists = false;
 		snapshot.forEach(function(childSnapshot){
+			
 			if (usernameLowercase == childSnapshot.val().username){
-				var favoriteArtistArray = childSnapshot.val().favoriteArtist;
-				var favoriteEventNameArray = childSnapshot.val().favoriteEventName;
-				var favoriteEventIDArray = childSnapshot.val().favoriteEventID;
-				$("#artist-fav").html("");
-				for (var i = 0; i < favoriteArtistArray.length; i++) {
-					console.log(favoriteArtistArray[i])
-					$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
-				}
-				$("#event-fav").html("");
-				for (var k=0; k < favoriteEventNameArray.length; k++){
-					$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "'>" + favoriteEventNameArray[k] + "</div>");
-
-				}
+				usernameExists = true;
 			}
+			console.log(usernameExists);
 		})
-	});
+	})
+
+	if (usernameExists == false){
+		$("#newuser-submit").hide();
+		$("#username").hide();
+		$("#user-submit").hide();
+		$("#logged-in").show().append(username);
+		$("#user-logout").show();
+
+		database.ref().push({
+			username: usernameLowercase,
+			favoriteArtist: [""],
+			favoriteEventName: [""],
+			favoriteEventID: [""],
+			
+		})
+	} else {
+		alert("This username already exists, please either log-in or use a different username");
+	}
+
+	// database.ref().on("value", function(snapshot){
+	// 	snapshot.forEach(function(childSnapshot){
+	// 		if (usernameLowercase == childSnapshot.val().username){
+	// 			var favoriteArtistArray = childSnapshot.val().favoriteArtist;
+	// 			var favoriteEventNameArray = childSnapshot.val().favoriteEventName;
+	// 			var favoriteEventIDArray = childSnapshot.val().favoriteEventID;
+	// 			$("#artist-fav").html("");
+	// 			for (var i = 0; i < favoriteArtistArray.length; i++) {
+	// 				console.log(favoriteArtistArray[i])
+	// 				$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div>");
+	// 			}
+	// 			$("#event-fav").html("");
+	// 			for (var k=0; k < favoriteEventNameArray.length; k++){
+	// 				$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "'>" + favoriteEventNameArray[k] + "</div>");
+
+	// 			}
+	// 		}
+	// 	})
+	// });
 
 })
 
