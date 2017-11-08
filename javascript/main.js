@@ -51,23 +51,64 @@ $("#user-submit").on("click", function() {
 
 $("#newuser-submit").on("click", function(){
 	event.preventDefault();
+	// $("#sign-up-modal").hide();
 
 	$("#userExistsModal").modal({ show: false});
 	username = $("#newUsername").val().trim();
 	usernameLowercase = username.toLowerCase();
 	var usernameExists;
 
-	database.ref().on("value", function(snapshot){
+	database.ref().once("value", function(snapshot){
 		usernameExists = false;
 		snapshot.forEach(function(childSnapshot){
-			
+			console.log(usernameLowercase);
+			console.log("username: "+childSnapshot.val().username);
 			if (usernameLowercase == childSnapshot.val().username){
 				usernameExists = true;
 			} 
 			console.log(usernameExists);
 		})
+
+		checkUserExists(usernameExists);
 	})
 
+
+
+	// if (usernameExists === false){
+	// 	$("#new-user-submit").hide();
+	// 	$("#username").hide();
+	// 	$("#user-submit").hide();
+	// 	$("#logged-in").show().append(username);
+	// 	$("#user-logout").show();
+	// 	$("#sign-up-modal").hide();
+
+	// 	 $("#signupModal").modal("hide");
+
+	// 	database.ref().push({
+	// 		username: usernameLowercase,
+	// 		favoriteArtist: [""],
+	// 		favoriteEventName: [""],
+	// 		favoriteEventID: [""],
+	// 		favoriteEventArtist: [""],
+			
+	// 	})
+	// 	$("#userExistsModal").modal({ show: false});
+	// } else {
+	// 	$("#userExistsModal").modal('show');
+	// 	$("#newUsername").val("");
+
+	// }
+})
+
+$("#user-logout").on("click",function(){
+	$("#username").show();
+	$("#user-submit").show();
+	$("#logged-in").hide();
+	
+
+})
+
+function checkUserExists(usernameExists) {
 	if (usernameExists === false){
 		$("#new-user-submit").hide();
 		$("#username").hide();
@@ -92,15 +133,7 @@ $("#newuser-submit").on("click", function(){
 		$("#newUsername").val("");
 
 	}
-})
-
-$("#user-logout").on("click",function(){
-	$("#username").show();
-	$("#user-submit").show();
-	$("#logged-in").hide();
-	
-
-})
+}
 
 
 var favoriteArtistButton = function() {
