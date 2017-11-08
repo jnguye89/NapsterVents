@@ -7,10 +7,11 @@ var zipCodeIn;
 var tmRootQueryURL = "https://app.ticketmaster.com/discovery/v2/events.json";
 var tmQueryURL = "";
 var tmApiKey = "Q60tg8AuoiJG7UpD8Lk2jUH1vutlxRd0";
+var gmLatitude;
+var gmLongitude;
 var savedEvent = false;
 var tmEventDate = "";
 var tmEventHTML = "";
-
 
 //---------------------------
 // Click event listeners
@@ -27,7 +28,7 @@ $("#nav-submit").on("click", function(event) {
     //Clear name and zip fields
     $("#artist-name").val('');
     $("#zip-code").val('');
-   
+
    	if (artistNameIn != ""){
 	artistInfo(artistNameIn);
 	}
@@ -36,6 +37,13 @@ $("#nav-submit").on("click", function(event) {
     	$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
     	$("#artist-button").empty();
     	$("#artist-info").empty();
+	}
+	
+	gmLatitude = "";
+	gmLongitude = "";
+
+	if (zipCodeIn !== "") {
+		geoCodeAddress();
 	}
 
 	getTicketmasterInfo(artistNameIn,zipCodeIn);
@@ -189,25 +197,63 @@ function artistInfo(artist) {
 }
 
 
-
-
 //-----------------------------
 // Start Ticketmaster Functions
+
+
+// Get the latitude and longitude for the zip code.
+// The latitude and longitude is used in the Ticketmaster AJAX call.
+function geoCodeAddress() {
+
+	var geoCodeStatus;
+	var geoCodeResults;
+  var geoCoder = new google.maps.Geocoder();
+
+  geoCoder.geocode(
+  	{'address': zipCodeIn}, function(geoCodeResults, geoCodeStatus) {
+
+    if (geoCodeStatus === 'OK') {
+      gmLatitude = geoCodeResults[0].geometry.bounds.f.b;
+      gmLongitude = geoCodeResults[0].geometry.bounds.b.b;
+      getTicketmasterInfo();
+    }
+    else {
+      console.log('Geocode was not successful for the following reason: ' + geoCodeStatus);
+    }
+  });
+}
 
 // Get the music events from Ticketmaster
 function getTicketmasterInfo(artistNameIn,zipCodeIn) {
 
+
+	if (gmLatitude === undefined) {
+		console.log("getTicketmasterInfo() gmLatitude is undefined: ", gmLatitude);
+		return;
+	}
+
  	savedEvent = false;
 
 	// The query URL for the AJAX call to Ticketmaster.
-	// The results are sorted by event date
-	tmQueryURL = tmRootQueryURL	+ "?keyword=" + artistNameIn
-															+ "&postalCode=" + zipCodeIn
-															+ "&radius=100"
-												   		+ "&sort=date,asc"
-											 	   		+ "&classificationName=music"
-															+ "&apikey=" + tmApiKey;
+	// The results are sorted by event date.
+	if (gmLatitude === "" || gmLongitude === "") {
+		tmQueryURL = tmRootQueryURL	+ "?keyword=" + artistNameIn
+																+ "&postalCode=" + zipCodeIn
+														   	+ "&sort=date,asc"
+													 	   	+ "&classificationName=music"
+																+ "&apikey=" + tmApiKey;
+	}
+	else {
 
+		tmQueryURL = tmRootQueryURL	+ "?keyword=" + artistNameIn
+																+ "&radius=50"
+																+ "&latlong=" + gmLatitude + "," + gmLongitude
+													   		+ "&sort=date,asc"
+												 	   		+ "&classificationName=music"
+																+ "&apikey=" + tmApiKey;
+	}
+
+	
 	console.log("getTicketmasterInfo() tmQueryURL: ", tmQueryURL);
 	
 	$.ajax(
@@ -230,14 +276,15 @@ function getTicketmasterInfo(artistNameIn,zipCodeIn) {
 	  	}
 	           },
 	  error: function(xhr, status, err) {
-	              console.log("Ticketmaster AJAX Error!");
+	              console.log("Ticketmaster AJAX Error!", err);
 	           }
 	});	
 }
 
-
 // Display the Ticketmaster music event information
 function displayEvents(tmEvents) {
+
+	console.log("displayEvents(tmEvents) Entered");
 
 	var i = 0;
 	var tmEventState = "";
@@ -296,12 +343,9 @@ function displayEvents(tmEvents) {
 	tmEventHTML += "</tbody>";
 	tmEventHTML += "</table>";
 
-	console.log("tmEventHTML: ", tmEventHTML);
-
 	// Add the Ticketmaster music event information to the web page HTML
 	$("#event-info").append(tmEventHTML);
 }
-
 
 // No music event information was returned from Ticketmaster.
 function displayNoEvents() {
@@ -322,14 +366,14 @@ function displayNoEvents() {
 	tmEventHTML += "<tr>";
 
 	if (artistNameIn === "") {
-		tmEventHTML += "<td>There are no music events in Zip Code " + zipCodeIn + "</td>";
+		tmEventHTML += "<td>There are no music events in Zip Code " + zipCodeIn + " within 50 miles</td>";
 	}
 	else {
 		if (zipCodeIn === "") {
 			tmEventHTML += "<td>There are no music events for " + artistNameIn + "</td>";
 		}
 		else {
-			tmEventHTML += "<td>There are no music events for " + artistNameIn + " in Zip Code " + zipCodeIn;
+			tmEventHTML += "<td>There are no music events for " + artistNameIn + " in Zip Code " + zipCodeIn + "within 50 miles</td>";
 		}
 	}
 
@@ -342,21 +386,13 @@ function displayNoEvents() {
 }
 
 
-// Display saved event info
+// Display the favorite music event info
 function displaySavedEvent(event) {
-
-	console.log("displaySavedEvent() event: ", event);
-
-	var tmEventId;
-
-	tmEventId = event.currentTarget.attributes[2].nodeValue;
 
  	savedEvent = true;
 
-	tmQueryURL = tmRootQueryURL + "?id=" + tmEventId
+	tmQueryURL = tmRootQueryURL + "?id=" + event.currentTarget.attributes[2].nodeValue
 															+ "&apikey=" + tmApiKey;
-
-	console.log("displaySavedEvent() tmQueryURL: ", tmQueryURL);
 
 	$.ajax(
 	{
@@ -377,18 +413,14 @@ function displaySavedEvent(event) {
 	  	}
 	           },
 	  error: function(xhr, status, err) {
-	              console.log("Ticketmaster AJAX Error!");
+	              console.log("Ticketmaster AJAX Error!", err);
 	           }
 	});	
 }
 
 
-// Display meesage if saved event is no longer valid
+// Display a message if the favorite music event has already happened
 function savedEventUnavailable(event) {
-
-	var tmArtistName;
-
-	tmArtistName = event.currentTarget.attributes[1].nodeValue;
 
 	$("#event-info").empty();
 
@@ -399,7 +431,7 @@ function savedEventUnavailable(event) {
 	tmEventHTML += "<tbody id='event-schedule'>";
 	tmEventHTML += "<tr>";
 
-	tmEventHTML += "<td>The " + tmArtistName + " music event has started or has already happened so ticket sales have stopped";
+	tmEventHTML += "<td>The " + event.currentTarget.attributes[1].nodeValue + " music event has started or has already happened so ticket sales have stopped";
 
 	tmEventHTML += "</tr>";
 	tmEventHTML += "</tbody>";

@@ -140,7 +140,7 @@ var favoriteArtistButton = function() {
             
             
 var favoriteEventButton = function(){
-	$(".save-event-submit").on("click", function(){ //JS
+	$(".save-event-submit").on("click", function(){
 		usernameLowercase = username.toLowerCase();
 		console.log("button pressed");
 		var eventName = $(this).attr("data-event-artist");
