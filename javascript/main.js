@@ -54,7 +54,7 @@ $("#newuser-submit").on("click", function(){
 	$("#userExistsModal").modal({ show: false});
 	username = $("#newUsername").val().trim();
 	usernameLowercase = username.toLowerCase();
-	var usernameExists ;
+	var usernameExists;
 
 	database.ref().on("value", function(snapshot){
 		usernameExists = false;
@@ -62,12 +62,12 @@ $("#newuser-submit").on("click", function(){
 			
 			if (usernameLowercase == childSnapshot.val().username){
 				usernameExists = true;
-			}
+			} 
 			console.log(usernameExists);
 		})
 	})
 
-	if (usernameExists == false){
+	if (usernameExists === false){
 		$("#new-user-submit").hide();
 		$("#username").hide();
 		$("#user-submit").hide();
@@ -84,6 +84,7 @@ $("#newuser-submit").on("click", function(){
 			favoriteEventID: [""],
 			
 		})
+		$("#userExistsModal").modal({ show: false});
 	} else {
 		$("#userExistsModal").modal('show');
 		$("#newUsername").val("");
