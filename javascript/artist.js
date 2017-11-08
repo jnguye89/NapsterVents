@@ -18,6 +18,8 @@ var tmEventHTML = "";
 // Get form value and run artistInfo function on form submit
 $("#nav-submit").on("click", function(event) {
 
+	event.preventDefault();
+
 	// Get artist NAME from user
     artistNameIn = $("#artist-name").val().trim();
     zipCodeIn = $("#zip-code").val().trim();
@@ -32,6 +34,8 @@ $("#nav-submit").on("click", function(event) {
 	else {
 		$("#artist-heading").html("<h2>No artist selected.</h2>");
     	$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
+    	$("#artist-button").empty();
+    	$("#artist-info").empty();
 	}
 
 	getTicketmasterInfo(artistNameIn,zipCodeIn);
@@ -69,6 +73,10 @@ $("#artist-fav").on("click", ".fav-artist-button", function(event) {
 
 
 $("#event-fav").on("click", ".fav-event-button", function(event) {
+
+	var eventArtist = event.currentTarget.attributes[3].nodeValue
+	artistInfo(eventArtist);
+
 	displaySavedEvent(event);
 })
 
