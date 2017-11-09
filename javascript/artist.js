@@ -1,8 +1,8 @@
 // Global Variables
 var artist;
 var genreList = [];
-
 var artistNameIn;
+var artistName;
 var zipCodeIn;
 var tmRootQueryURL = "https://app.ticketmaster.com/discovery/v2/events.json";
 var tmQueryURL = "";
@@ -37,16 +37,17 @@ $("#nav-submit").on("click", function(event) {
     	$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
     	$("#artist-button").empty();
     	$("#artist-info").empty();
-	}
+    	artistName = "";
+    	if (zipCodeIn !== "") {
+    		geoCodeAddress();
+    	}
+    }
+
+	$("#event-info").empty();
 	
 	gmLatitude = "";
 	gmLongitude = "";
 
-	if (zipCodeIn !== "") {
-		geoCodeAddress();
-	}
-
-	getTicketmasterInfo(artistNameIn,zipCodeIn);
 });
 
 
@@ -58,8 +59,10 @@ $("#artist-fav").on("click", ".fav-artist-button", function(event) {
 	artistInfo(aName);
 
 	zipCodeIn = "";
+	gmLatitude = "";
+	gmLongitude = "";
 
-	getTicketmasterInfo(aName,zipCodeIn);
+	getTicketmasterInfo(aName);
 
 });
 
@@ -123,13 +126,16 @@ function artistInfo(artist) {
     	if (response.search.data.artists.length < 1){
     		$("#artist-heading").html("<h2>Sorry, we could not find information on that artist.</h2>");
     		$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
+    		artistName = "";
     	}
     	else{
-    		var artistName = response.search.data.artists[0].name;
+    		artistName = response.search.data.artists[0].name;
+    		console.log("artistInfo() artistName: ", artistName); //********************************JS********************
   			$("#artist-heading").html("<h2>"+artistName);
   			$("#artist-button").html("<button class='btn btn-success btn-block' type='button' data-artist = '"+artistName+"' id='artist-submit'>Make Favorite &nbsp;&nbsp;<span class='glyphicon glyphicon-heart-empty'></span></button>");
     	  	favoriteArtistButton(); 
-		
+
+
       	
 
       	// Display list of artist BLURBS
@@ -198,6 +204,19 @@ function artistInfo(artist) {
 		  });
 
 		}
+
+  if (artistName === "" && zipCodeIn === "") {
+  	return;
+  	}
+  	else {
+  		if (zipCodeIn === "") {
+  			getTicketmasterInfo();
+  		}
+  		else {
+  			geoCodeAddress();
+  		}
+  	}
+
   	});
 
 }
@@ -219,9 +238,11 @@ function geoCodeAddress() {
   	{'address': zipCodeIn}, function(geoCodeResults, geoCodeStatus) {
 
     if (geoCodeStatus === 'OK') {
-      gmLatitude = geoCodeResults[0].geometry.bounds.f.b;
-      gmLongitude = geoCodeResults[0].geometry.bounds.b.b;
+    	if (geoCodeResults.length > 0) {
+      gmLatitude = geoCodeResults[0].geometry.viewport.f.f;
+      gmLongitude = geoCodeResults[0].geometry.viewport.b.b;
       getTicketmasterInfo();
+    	}
     }
     else {
       console.log('Geocode was not successful for the following reason: ' + geoCodeStatus);
@@ -230,8 +251,7 @@ function geoCodeAddress() {
 }
 
 // Get the music events from Ticketmaster
-function getTicketmasterInfo(artistNameIn,zipCodeIn) {
-
+function getTicketmasterInfo() {
 
 	if (gmLatitude === undefined) {
 		console.log("getTicketmasterInfo() gmLatitude is undefined: ", gmLatitude);
@@ -242,16 +262,16 @@ function getTicketmasterInfo(artistNameIn,zipCodeIn) {
 
 	// The query URL for the AJAX call to Ticketmaster.
 	// The results are sorted by event date.
-	if (gmLatitude === "" || gmLongitude === "") {
-		tmQueryURL = tmRootQueryURL	+ "?keyword=" + artistNameIn
-																+ "&postalCode=" + zipCodeIn
+	if (gmLatitude === "" && gmLongitude === "") {
+		tmQueryURL = tmRootQueryURL	+ "?keyword=" + artistName
+																// + "&postalCode=" + zipCodeIn
 														   	+ "&sort=date,asc"
 													 	   	+ "&classificationName=music"
 																+ "&apikey=" + tmApiKey;
 	}
 	else {
 
-		tmQueryURL = tmRootQueryURL	+ "?keyword=" + artistNameIn
+		tmQueryURL = tmRootQueryURL	+ "?keyword=" + artistName
 																+ "&radius=50"
 																+ "&latlong=" + gmLatitude + "," + gmLongitude
 													   		+ "&sort=date,asc"
@@ -259,9 +279,6 @@ function getTicketmasterInfo(artistNameIn,zipCodeIn) {
 																+ "&apikey=" + tmApiKey;
 	}
 
-	
-	console.log("getTicketmasterInfo() tmQueryURL: ", tmQueryURL);
-	
 	$.ajax(
 	{
 	  type:"GET",
@@ -269,8 +286,6 @@ function getTicketmasterInfo(artistNameIn,zipCodeIn) {
 	  async:true,
 	  dataType: "json",
 	  success: function(json) {
-
-	  	console.log("getTicketmasterInfo() Tickmaster JSON: ", json);
 
 	  	// Check if music events were returned
 	  	if (json.page.totalElements === 0) {
@@ -290,12 +305,11 @@ function getTicketmasterInfo(artistNameIn,zipCodeIn) {
 // Display the Ticketmaster music event information
 function displayEvents(tmEvents) {
 
-	console.log("displayEvents(tmEvents) Entered");
-
 	var i = 0;
 	var tmEventState = "";
 	var currentDate = moment();
 	var tmEventDate;
+	var hasMusicEvent = false;
 
 	$("#event-info").empty();
 
@@ -321,6 +335,9 @@ function displayEvents(tmEvents) {
 		if ((tmEventDate).isBefore(currentDate, 'day')) {
 			continue;
 		}
+		else {
+			hasMusicEvent = true;
+		}
 
 		// Music events outside the US don't have a state code property.
 		// In those cases use the country code in place of the state code.
@@ -340,7 +357,8 @@ function displayEvents(tmEvents) {
 		tmEventHTML	+= "<td><a href=" + tmEvents._embedded.events[i].url + " target=_blank>Ticketmaster</a></td>";
 		
 		if (!savedEvent) {
-			tmEventHTML += "<td><button type='button' class='btn btn-primary btn-block save-event-submit' data-toggle='tooltip' title='Save This Event' data-artist-name='" + artistNameIn + "'" + "data-event-artist='" + tmEvents._embedded.events[i].name + "' data-event-id='" + tmEvents._embedded.events[i].id + "'><span class='glyphicon glyphicon-heart-empty'></span></button></td>";
+			tmEventHTML += "<td><button type='button' class='btn btn-primary btn-block save-event-submit' data-toggle='tooltip' title='Save This Event' data-artist-name='" + artistName + "'" + "data-event-artist='" + tmEvents._embedded.events[i].name + "' data-event-id='" + tmEvents._embedded.events[i].id + "'><span class='glyphicon glyphicon-heart-empty'></span></button></td>";
+			// tmEventHTML += "<td><button type='button' class='btn btn-primary btn-block save-event-submit' data-toggle='tooltip' title='Save This Event' data-artist-name='" + artistNameIn + "'" + "data-event-artist='" + tmEvents._embedded.events[i].name + "' data-event-id='" + tmEvents._embedded.events[i].id + "'><span class='glyphicon glyphicon-heart-empty'></span></button></td>";
 		}
 
 		tmEventHTML	+= "</tr>";
@@ -351,11 +369,16 @@ function displayEvents(tmEvents) {
 
 	// Add the Ticketmaster music event information to the web page HTML
 	$("#event-info").append(tmEventHTML);
+
+	if (!hasMusicEvent) {
+		displayNoEvents();
+	}
+
 }
 
 // No music event information was returned from Ticketmaster.
 function displayNoEvents() {
-	
+
 	$("#event-info").empty();
 
 	tmEventHTML  = "<h2 class='panel-heading'>Ticketmaster Music Events</h2>";
@@ -371,15 +394,15 @@ function displayNoEvents() {
 	tmEventHTML += "<tbody id='event-schedule'>";
 	tmEventHTML += "<tr>";
 
-	if (artistNameIn === "") {
+	if (artistName === "") {
 		tmEventHTML += "<td>There are no music events in Zip Code " + zipCodeIn + " within 50 miles</td>";
 	}
 	else {
 		if (zipCodeIn === "") {
-			tmEventHTML += "<td>There are no music events for " + artistNameIn + "</td>";
+			tmEventHTML += "<td>There are no music events for " + artistName + "</td>";
 		}
 		else {
-			tmEventHTML += "<td>There are no music events for " + artistNameIn + " in Zip Code " + zipCodeIn + " within 50 miles</td>";
+			tmEventHTML += "<td>There are no music events for " + artistName + " in Zip Code " + zipCodeIn + " within 50 miles</td>";
 		}
 	}
 
@@ -407,8 +430,6 @@ function displaySavedEvent(event) {
 	  async:true,
 	  dataType: "json",
 	  success: function(json) {
-
-	  	console.log("displaySavedEvent() Tickmaster JSON: ", json);
 
 	  	// Check if music events were returned
 	  	if (json.page.totalElements === 0) {
