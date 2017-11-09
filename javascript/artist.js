@@ -55,14 +55,11 @@ $("#artist-fav").on("click", ".fav-artist-button", function(event) {
 
    	var aName = event.currentTarget.attributes[1].value;
 
-   	var artistFixed = aName.split(" ").join("-");
-    var artistLower = artistFixed.toLowerCase();
-
-	artistInfo(artistLower);
+	artistInfo(aName);
 
 	zipCodeIn = "";
 
-	getTicketmasterInfo(artistLower,zipCodeIn);
+	getTicketmasterInfo(aName,zipCodeIn);
 
 });
 
@@ -83,7 +80,16 @@ $("#artist-fav").on("click", ".fav-artist-button", function(event) {
 $("#event-fav").on("click", ".fav-event-button", function(event) {
 
 	var eventArtist = event.currentTarget.attributes[3].nodeValue
+
+	if (eventArtist != ""){
 	artistInfo(eventArtist);
+	}
+	else {
+		$("#artist-heading").html("<h2>No artist selected.</h2>");
+    	$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
+    	$("#artist-button").empty();
+    	$("#artist-info").empty();
+	}
 
 	displaySavedEvent(event);
 })
@@ -91,7 +97,7 @@ $("#event-fav").on("click", ".fav-event-button", function(event) {
 
 
 
-//-------------------------------
+//------------------------------------------------------------------------------------------------------------------------
 // Start Napster Functions
 
 // Function to display artist info
@@ -197,7 +203,7 @@ function artistInfo(artist) {
 }
 
 
-//-----------------------------
+//--------------------------------------------------------------------------------------------------------
 // Start Ticketmaster Functions
 
 
@@ -373,7 +379,7 @@ function displayNoEvents() {
 			tmEventHTML += "<td>There are no music events for " + artistNameIn + "</td>";
 		}
 		else {
-			tmEventHTML += "<td>There are no music events for " + artistNameIn + " in Zip Code " + zipCodeIn + "within 50 miles</td>";
+			tmEventHTML += "<td>There are no music events for " + artistNameIn + " in Zip Code " + zipCodeIn + " within 50 miles</td>";
 		}
 	}
 
