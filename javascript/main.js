@@ -24,7 +24,7 @@ $("#user-submit").on("click", function() {
 	$("#logged-in").show().append(username);
 	$("#user-logout").show();
 	$("#newuser-submit").hide();
-
+	$("#sign-up-modal").hide();
 
 	database.ref().once("value", function(snapshot){
 		snapshot.forEach(function(childSnapshot){
