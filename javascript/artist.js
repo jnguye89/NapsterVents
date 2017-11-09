@@ -321,7 +321,7 @@ function displayEvents(tmEvents) {
 	tmEventHTML += "<th>Venue</th>";
 	tmEventHTML += "<th>Location</th>";
 	tmEventHTML += "<th>Date</th>";
-	tmEventHTML += "<th>More Information</th>";
+	tmEventHTML += "<th></th>";
 	tmEventHTML += "<th></th>";
 	tmEventHTML += "</tr>";
 	tmEventHTML += "</thead>";
@@ -354,10 +354,10 @@ function displayEvents(tmEvents) {
 		tmEventHTML += "<td>" + tmEvents._embedded.events[i]._embedded.venues[0].name + "</td>";
 		tmEventHTML	+= "<td>" + tmEvents._embedded.events[i]._embedded.venues[0].city.name + ", " + tmEventState + "</td>";
 		tmEventHTML += "<td>" + moment(tmEvents._embedded.events[i].dates.start.localDate).format("MMMM Do YYYY") + "</td>";
-		tmEventHTML	+= "<td><a href=" + tmEvents._embedded.events[i].url + " target=_blank>Ticketmaster</a></td>";
+		tmEventHTML	+= "<td><a href=" + tmEvents._embedded.events[i].url + " target=_blank>Tickets</a></td>";
 		
 		if (!savedEvent) {
-			tmEventHTML += "<td><button type='button' class='btn btn-primary btn-block save-event-submit' data-toggle='tooltip' title='Save This Event' data-artist-name='" + artistName + "'" + "data-event-artist='" + tmEvents._embedded.events[i].name + "' data-event-id='" + tmEvents._embedded.events[i].id + "'><span class='glyphicon glyphicon-heart-empty'></span></button></td>";
+			tmEventHTML += "<td><button type='button' class='btn btn-primary btn-block save-event-submit' data-toggle='tooltip' title='Save This Music Event' data-artist-name='" + artistName + "'" + "data-event-artist='" + tmEvents._embedded.events[i].name + "' data-event-id='" + tmEvents._embedded.events[i].id + "'><span class='glyphicon glyphicon-heart-empty'></span></button></td>";
 			// tmEventHTML += "<td><button type='button' class='btn btn-primary btn-block save-event-submit' data-toggle='tooltip' title='Save This Event' data-artist-name='" + artistNameIn + "'" + "data-event-artist='" + tmEvents._embedded.events[i].name + "' data-event-id='" + tmEvents._embedded.events[i].id + "'><span class='glyphicon glyphicon-heart-empty'></span></button></td>";
 		}
 
@@ -383,14 +383,6 @@ function displayNoEvents() {
 
 	tmEventHTML  = "<h2 class='panel-heading'>Ticketmaster Music Events</h2>";
 	tmEventHTML += "<table class='table'>";
-	tmEventHTML += "<thead>";
-	tmEventHTML += "<tr>"
-	tmEventHTML += "<th>Artist Name</th>";
-	tmEventHTML += "<th>Venue</th>";
-	tmEventHTML += "<th>Date</th>";
-	tmEventHTML += "<th>More Information</th>";
-	tmEventHTML += "</tr>";
-	tmEventHTML += "</thead>";
 	tmEventHTML += "<tbody id='event-schedule'>";
 	tmEventHTML += "<tr>";
 
