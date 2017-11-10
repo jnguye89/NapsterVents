@@ -257,6 +257,7 @@ function artistInfo(artist) {
 
 }
 
+// Code updates the source of the artist sample music for each new submission
 function updateSRC(url){
 	console.log('here is it ' + url);
 	$(".mejs__offscreen").remove();
