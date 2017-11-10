@@ -18,8 +18,8 @@ var tmEventHTML = "";
 
 // Get form value and run artistInfo function on form submit
 $("#nav-submit").on("click", function(event) {
-
 	event.preventDefault();
+	
 
 	// Get artist NAME from user
     artistNameIn = $("#artist-name").val().trim();
@@ -48,6 +48,13 @@ $("#nav-submit").on("click", function(event) {
 	gmLatitude = "";
 	gmLongitude = "";
 
+
+	if (zipCodeIn !== "") {
+		geoCodeAddress();
+	}
+
+	getTicketmasterInfo(artistNameIn,zipCodeIn);
+
 });
 
 
@@ -63,6 +70,7 @@ $("#artist-fav").on("click", ".fav-artist-button", function(event) {
 	gmLongitude = "";
 
 	getTicketmasterInfo(aName);
+
 
 });
 
@@ -137,6 +145,10 @@ function artistInfo(artist) {
 
 
       	
+   
+      
+
+
 
       	// Display list of artist BLURBS
       	var blurb = response.search.data.artists[0].blurbs;
@@ -203,6 +215,30 @@ function artistInfo(artist) {
 		     
 		  });
 
+			console.log(response);
+		  	var music = response.search.data.artists[0].links.topTracks.href
+		  	var queryURL = music +"?apikey=ZWZlOGIzZWQtMmJjYi00MDVkLWJjYmItNzhhNDAyM2IxMDU3";
+	    	console.log(queryURL);
+	    	$.ajax({
+        		url: queryURL,
+        		method: "GET"
+      			}).done(function(response) {
+      				console.log(response);
+      				var url = response.tracks[0].previewURL;
+      				console.log(url);
+
+	    			updateSRC(url);	
+
+	    			// var audioDiv = $('<div>');
+	    			// audioDiv.append($('<audio>'));
+	    			// $("mediaSource").attr("src", url);
+	    			// $('audio').mediaelementplayer({
+
+	    				
+
+	    			// })
+
+			});
 		}
 
   if (artistName === "" && zipCodeIn === "") {
@@ -220,6 +256,25 @@ function artistInfo(artist) {
   	});
 
 }
+
+function updateSRC(url){
+	console.log('here is it ' + url);
+	$(".mejs__offscreen").remove();
+	$(".mejs__container").remove();
+	$("#audioDiv").append("<audio id='music-player'><source id='mediaSource' type='audio/mp3'></audio></audio>");
+	$("#mediaSource").attr("src", url);
+	$('audio').mediaelementplayer({
+		features: ['playpause', 'volume', 'progress', 'current', 'duration']
+	});
+
+
+
+
+};
+
+
+
+
 
 
 //--------------------------------------------------------------------------------------------------------
