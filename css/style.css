@@ -11,7 +11,7 @@ footer {
 .page-header {
 	height: 110px;
 	padding-top: 20px;
-	background-image: url('../images/NapsterVents-logo.gif');
+	background-image: url('../images/NapsterVents-Logo.gif');
     background-repeat: no-repeat;
     background-position: 10px 0; 
     margin: 0;
@@ -66,4 +66,18 @@ body {
 
 .panel {
 	box-shadow: 2px 2px 12px #56565a;
+}
+
+#logged-in {
+	margin-right: 12px;
+	color: #2f44b4;
+	font-family: 'Raleway', sans-serif;
+}
+
+#artist-name {
+	margin-left: 12px;
+}
+
+.fav-link {
+	width: 90%;
 }
