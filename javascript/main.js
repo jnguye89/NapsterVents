@@ -32,17 +32,14 @@ $("#user-submit").on("click", function() {
 	database.ref().once("value", function(snapshot){
 		var usernameNotExists = true;
 		snapshot.forEach(function(childSnapshot){
-			console.log(usernameLowercase);
-			console.log("username: "+childSnapshot.val().username);
 			if (usernameLowercase == childSnapshot.val().username){
 				usernameNotExists = false;
 			} 
-			console.log(usernameNotExists);
+			
 		})
 		//passes the boolean of whether the username exists or not to the function
 		checkUserNotExists(usernameNotExists);
 	})
-
 })
 
 
@@ -78,21 +75,15 @@ function checkUserNotExists(usernameNotExists) {
 					//displays the array into the sidebar
 					$("#artist-fav").html("");
 					for (var i = 1; i < favoriteArtistArray.length; i++) {
-						console.log(favoriteArtistArray[i])
 						$("#artist-fav").append("<div class='fav'><span class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</span><span class='del-artist-button close' fav-value='" + i + "'>&times;</span></div>");
 						deleteArtistButton();
 					}
-
-					//"<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</div><button type='button' class='del-artist-button close' fav-value='" + i + "'>&times;</button></span>"
 
 					$("#event-fav").html("");
 					for (var k=1; k < favoriteEventNameArray.length; k++){
 						$("#event-fav").append("<div class='fav'><span class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "' artist-value='" + favoriteEventArtistArray[k] + "''>" + favoriteEventNameArray[k] + "</span><span class='del-event-button close' fav-value='" + k + "'>&times;</span></div>");
 						deleteEventButton();
 					}
-
-// <div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "' artist-value='" + favoriteEventArtistArray[k] + "''>" + favoriteEventNameArray[k] + "<button type='button' class='del-event-button close' fav-value='" + k + "'>&times;</button></div>
-					//<div><span class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "' artist-value='" + favoriteEventArtistArray[k] + "''>" + favoriteEventNameArray[k] + "</span><span class='del-event-button close' fav-value='" + k + "'>&times;</span></div>
 				}
 			})
 		})
@@ -120,12 +111,9 @@ $("#newuser-submit").on("click", function(){
 	database.ref().once("value", function(snapshot){
 		usernameExists = false;
 		snapshot.forEach(function(childSnapshot){
-			console.log(usernameLowercase);
-			console.log("username: "+childSnapshot.val().username);
 			if (usernameLowercase == childSnapshot.val().username){
 				usernameExists = true;
-			} 
-			console.log(usernameExists);
+			}
 		})
 
 		//passes the boolean of whether or not username exists and calls the function to either create the new user name or throw an error that ther username already exists
@@ -177,13 +165,10 @@ var favoriteArtistButton = function() {
 		usernameLowercase = username.toLowerCase();
 		var artistName = $(this).attr("data-artist");
 		var artistNameExists;
-		console.log(artistName);
-
 
 		database.ref().once("value", function(snapshot){
 			snapshot.forEach(function(childSnapshot){
 				var favoriteArtistArray = [];
-				console.log(childSnapshot.key);
 				if (usernameLowercase == childSnapshot.val().username){
 
 					favoriteArtistArray = childSnapshot.val().favoriteArtist;
@@ -219,7 +204,6 @@ var favoriteArtistButton = function() {
 var favoriteEventButton = function(){
 	$(".save-event-submit").on("click", function(){
 		usernameLowercase = username.toLowerCase();
-		console.log("button pressed");
 		var eventName = $(this).attr("data-event-artist");
 		var eventArtist = $(this).attr("data-artist-name")
 		var eventID = $(this).attr("data-event-id");
@@ -235,10 +219,9 @@ var favoriteEventButton = function(){
 					favoriteEventArtistArray = childSnapshot.val().favoriteEventArtist;
 
 					eventIDExists = favoriteEventIDArray.indexOf(eventID);
-					console.log(eventIDExists);
+					
 					//checks to see if the event already exists
 					if (eventIDExists === -1){
-						console.log("event doesn't exist");
 						favoriteEventNameArray.push(eventName);
 						favoriteEventIDArray.push(eventID);
 						favoriteEventArtistArray.push(eventArtist);
@@ -305,7 +288,6 @@ var deleteEventButton = function(){
 	})
 }
 
-
 //button to delete the artist you no longer want in favorites
 var deleteArtistButton = function(){
 	$(".del-artist-button").on("click", function(){
@@ -330,13 +312,11 @@ var deleteArtistButton = function(){
 					
 					$("#artist-fav").html("");
 					for (var i = 1; i < favoriteArtistArray.length; i++) {
-						console.log(favoriteArtistArray[i])
 						$("#artist-fav").append("<div class='fav'><span class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "</span><span class='del-artist-button close' fav-value='" + i + "'>&times;</span></div>");
 						deleteArtistButton();
 					}
 				}
 			})
 		})
-
 	})
 }
