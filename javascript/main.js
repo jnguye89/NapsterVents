@@ -19,35 +19,62 @@ $("#user-submit").on("click", function() {
 	//get username and password
 	username = $("#username").val().trim();
 	usernameLowercase = username.toLowerCase();
-	$("#username").hide();
-	$("#user-submit").hide();
-	$("#logged-in").show().append(username);
-	$("#user-logout").show();
-	$("#newuser-submit").hide();
-	$("#sign-up-modal").hide();
+	
+	$("#userNotExistsModal").modal({ show: false});
+
 
 	database.ref().once("value", function(snapshot){
+		usernameNotExists = true;
 		snapshot.forEach(function(childSnapshot){
+			console.log(usernameLowercase);
+			console.log("username: "+childSnapshot.val().username);
 			if (usernameLowercase == childSnapshot.val().username){
-				var favoriteArtistArray = childSnapshot.val().favoriteArtist;
-				var favoriteEventNameArray = childSnapshot.val().favoriteEventName;
-				var favoriteEventIDArray = childSnapshot.val().favoriteEventID;
-				var favoriteEventArtistArray = childSnapshot.val().favoriteEventArtist;
-				$("#artist-fav").html("");
-				for (var i = 1; i < favoriteArtistArray.length; i++) {
-					console.log(favoriteArtistArray[i])
-					$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "<button type='button' class='del-artist-button close' fav-value='" + i + "'>&times;</button></div>");
-					deleteArtistButton();
-				}
-				$("#event-fav").html("");
-				for (var k=1; k < favoriteEventNameArray.length; k++){
-					$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "' artist-value='" + favoriteEventArtistArray[k] + "''>" + favoriteEventNameArray[k] + "<button type='button' class='del-event-button close' fav-value='" + k + "'>&times;</button></div>");
-					deleteEventButton();
-				}
-			}
+				usernameNotExists = false;
+			} 
+			console.log(usernameNotExists);
 		})
-	});
+		checkUserNotExists(usernameNotExists);
+	})
+
 })
+
+function checkUserNotExists(usernameNotExists) {
+	if (usernameNotExists == false){
+		
+		
+		$("#username").hide();
+		$("#user-submit").hide();
+		$("#logged-in").show().append(username);
+		$("#user-logout").show();
+		$("#newuser-submit").hide();
+		$("#sign-up-modal").hide();
+
+		database.ref().once("value", function(snapshot){
+			snapshot.forEach(function(childSnapshot){
+				if (usernameLowercase == childSnapshot.val().username){
+					var favoriteArtistArray = childSnapshot.val().favoriteArtist;
+					var favoriteEventNameArray = childSnapshot.val().favoriteEventName;
+					var favoriteEventIDArray = childSnapshot.val().favoriteEventID;
+					var favoriteEventArtistArray = childSnapshot.val().favoriteEventArtist;
+					$("#artist-fav").html("");
+					for (var i = 1; i < favoriteArtistArray.length; i++) {
+						console.log(favoriteArtistArray[i])
+						$("#artist-fav").append("<div class='fav-link fav-artist-button' value='"+ favoriteArtistArray[i] + "'>" + favoriteArtistArray[i] + "<button type='button' class='del-artist-button close' fav-value='" + i + "'>&times;</button></div>");
+						deleteArtistButton();
+					}
+					$("#event-fav").html("");
+					for (var k=1; k < favoriteEventNameArray.length; k++){
+						$("#event-fav").append("<div class='fav-link fav-event-button' name-value='" + favoriteEventNameArray[k] + "' id-value='" + favoriteEventIDArray[k] + "' artist-value='" + favoriteEventArtistArray[k] + "''>" + favoriteEventNameArray[k] + "<button type='button' class='del-event-button close' fav-value='" + k + "'>&times;</button></div>");
+						deleteEventButton();
+					}
+				}
+			})
+		})
+	} else {
+		$("#userNotExistsModal").modal('show');
+	
+	}
+}
 
 
 $("#newuser-submit").on("click", function(){
