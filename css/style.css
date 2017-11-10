@@ -77,3 +77,7 @@ body {
 #artist-name {
 	margin-left: 12px;
 }
+
+.fav-link {
+	width: 90%;
+}
