@@ -11,8 +11,8 @@ var config = {
 var database = firebase.database();
 
 //declaring global variable for username
-var username = "";
-var usernameLowercase = "";
+var username;
+var usernameLowercase;
 
 
 //when user clicks this button, it logs the customer in by searching through each key for the username to match
