@@ -13,19 +13,15 @@ footer {
 	padding-top: 20px;
 	background-image: url('../images/NapsterVents-Logo.gif');
     background-repeat: no-repeat;
-    background-position: 10px 0; 
+    background-position: 0 0; 
     margin: 0;
     background-color: #eee;
 }
 
-.fav-link {
-	padding: 5px;
-}
+
 
 .fav-link:hover {
-	padding: 5px;
-	font-weight: 900;
-	text-decoration: underline;
+	font-weight: 700;
 	cursor: pointer;
 }
 
@@ -44,7 +40,13 @@ h1 small {
 }
 
 .artist-container {
-	background-color: #e2e2e9;
+	background-color: #eee;
+	background-image: url('../images/wood2.jpg');
+	padding: 20px;
+	border: 1px solid #62bb47;
+	border-radius: 6px;
+	margin-bottom: 20px;
+	box-shadow: 2px 2px 18px black;
 }
 
 #event-info .panel-body {
@@ -65,7 +67,7 @@ body {
 }
 
 .panel {
-	box-shadow: 2px 2px 12px #56565a;
+	box-shadow: 2px 2px 18px black;
 }
 
 #logged-in {
@@ -79,8 +81,29 @@ body {
 }
 
 .fav-link {
-	width: 90%;
+	font-family: 'News Cycle', sans-serif;
 }
-.fav{
-	height: 30px;
+
+#event-fav .fav{
+	height: 50px;
+}
+
+#search-label {
+	font-family: 'Raleway', sans-serif;
+}
+
+h4 {
+	font-family: 'Fjalla One', sans-serif;
+}
+
+#artist-info li {
+	font-family: 'Raleway', sans-serif;
+}
+
+#music-heading {
+	display: none;
+}
+
+#audioDiv {
+	display: none;
 }
