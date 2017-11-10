@@ -13,7 +13,9 @@ var savedEvent = false;
 var tmEventDate = "";
 var tmEventHTML = "";
 
-//---------------------------
+
+
+//----------------------------------------------------------------------------------------------------
 // Click event listeners
 
 // Get form value and run artistInfo function on form submit
@@ -58,7 +60,7 @@ $("#nav-submit").on("click", function(event) {
 });
 
 
-// Get form value and run artistInfo function on favorite click
+// Get form value and run functions on artist favorite click
 $("#artist-fav").on("click", ".fav-artist-button", function(event) {
 
    	var aName = event.currentTarget.attributes[1].value;
@@ -71,23 +73,10 @@ $("#artist-fav").on("click", ".fav-artist-button", function(event) {
 
 	getTicketmasterInfo(aName);
 
-
 });
 
 
-
-
-// Add an on-click event listener for the Search button	
-// $("#nav-submit").on("click", function(event) {
-
-	// artistNameIn = $("#artist-name").val().trim();
-	// zipCodeIn = $("#zip-code").val().trim();
-
-// 	getTicketmasterInfo();
-// 	console.log("tmEvents: ", tmEvents);
-// })
-
-
+// Get form value and run functions on event favorite click
 $("#event-fav").on("click", ".fav-event-button", function(event) {
 
 	var eventArtist = event.currentTarget.attributes[3].nodeValue
@@ -129,7 +118,6 @@ function artistInfo(artist) {
       method: "GET"
     }).done(function(response) {
     	
-    	console.log(response);
     	
     	if (response.search.data.artists.length < 1){
     		$("#artist-heading").html("<h2>Sorry, we could not find information on that artist.</h2>");
@@ -138,128 +126,127 @@ function artistInfo(artist) {
     	}
     	else{
     		artistName = response.search.data.artists[0].name;
-    		console.log("artistInfo() artistName: ", artistName); //********************************JS********************
   			$("#artist-heading").html("<h2>"+artistName);
   			$("#artist-button").html("<button class='btn btn-success btn-block' type='button' data-artist = '"+artistName+"' id='artist-submit'>Make Favorite &nbsp;&nbsp;<span class='glyphicon glyphicon-heart-empty'></span></button>");
     	  	favoriteArtistButton(); 
 
+	      	// Display list of artist BLURBS
+	      	var blurb = response.search.data.artists[0].blurbs;
 
-      	
-   
-      
+	      	var uList = $("<ul>");
 
-
-
-      	// Display list of artist BLURBS
-      	var blurb = response.search.data.artists[0].blurbs;
-
-      	var uList = $("<ul>");
-
-      	for (var i = 0; i < blurb.length; i++) {
-      		uList.append("<li>"+blurb[i]);
-      	}
-
-      	$("#artist-info").append(uList);
-
-
-	    
-
-      	// Do second ajax query to pull artist GENRES
-      	var genre = response.search.data.artists[0].links.genres.href;
-      	var queryURL = genre+"?apikey=YTk0ODZlZTktNjIxMy00ZWQ1LTgwYzQtMDk5NmVjYjBlY2Vm";
-
-	    $.ajax({
-	      url: queryURL,
-	      method: "GET"
-	    }).done(function(response) {		      
-	    	$("#artist-info").append("<h4>"+"Genres: ");
-
-	    	var uList = $("<ul>");
-
-	      	for (var i = 0; i < response.genres.length; i++) {
-	      	uList.append("<li>"+response.genres[i].name);		      
+	      	for (var i = 0; i < blurb.length; i++) {
+	      		uList.append("<li>"+blurb[i]);
 	      	}
 
 	      	$("#artist-info").append(uList);
-    	});
-
-    	// Do third API query to pull down an artist photo
-    	var image = response.search.data.artists[0].links.images.href
-
-		var queryURL = image + "?apikey=ZWZlOGIzZWQtMmJjYi00MDVkLWJjYmItNzhhNDAyM2IxMDU3";
-
-		$.ajax({
-		url: queryURL,
-		method: "GET"
-		  }).done(function(response) {
-
-		  	if (response.images.length < 1){
-    		$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
-    		}
-    		else{
 
 
-		    var image = response.images[0].url
+	      	// Do second ajax query to pull artist GENRES
+	      	var genre = response.search.data.artists[0].links.genres.href;
+	      	var queryURL = genre+"?apikey=YTk0ODZlZTktNjIxMy00ZWQ1LTgwYzQtMDk5NmVjYjBlY2Vm";
 
-		    var artistImage = $("<img>");
+		    $.ajax({
+		      url: queryURL,
+		      method: "GET"
+		    }).done(function(response) {		      
+		    	$("#artist-info").append("<h4>"+"Genres: ");
+
+		    	var uList = $("<ul>");
+
+		      	for (var i = 0; i < response.genres.length; i++) {
+		      	uList.append("<li>"+response.genres[i].name);		      
+		      	}
+
+		      	$("#artist-info").append(uList);
+	    	});
+
+	    	// Do third API query to pull down an artist photo
+	    	var image = response.search.data.artists[0].links.images.href
+
+			var queryURL = image + "?apikey=ZWZlOGIzZWQtMmJjYi00MDVkLWJjYmItNzhhNDAyM2IxMDU3";
+
+			$.ajax({
+			url: queryURL,
+			method: "GET"
+			  }).done(function(response) {
+
+			  	if (response.images.length < 1){
+	    		$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
+	    		}
+	    		else{
 
 
-		    artistImage.attr("src", image);
+			    var image = response.images[0].url
 
-		    artistImage.addClass("img-responsive img-rounded");
+			    var artistImage = $("<img>");
 
-		      
-		    $("#artist-pic").html(artistImage);
+
+			    artistImage.attr("src", image);
+
+			    artistImage.addClass("img-responsive img-rounded");
+
+			      
+			    $("#artist-pic").html(artistImage);
 
 			}
 		     
-		  });
+			  });
 
-			console.log(response);
-		  	var music = response.search.data.artists[0].links.topTracks.href
-		  	var queryURL = music +"?apikey=ZWZlOGIzZWQtMmJjYi00MDVkLWJjYmItNzhhNDAyM2IxMDU3";
-	    	console.log(queryURL);
-	    	$.ajax({
-        		url: queryURL,
-        		method: "GET"
-      			}).done(function(response) {
-      				console.log(response);
-      				var url = response.tracks[0].previewURL;
-      				console.log(url);
+				console.log(response);
+			  	var music = response.search.data.artists[0].links.topTracks.href
+			  	var queryURL = music +"?apikey=ZWZlOGIzZWQtMmJjYi00MDVkLWJjYmItNzhhNDAyM2IxMDU3";
+		    	console.log(queryURL);
+		    	$.ajax({
+	        		url: queryURL,
+	        		method: "GET"
+	      			}).done(function(response) {
+	      				if (response.tracks.length > 0){
+		      				console.log(response);
+		      				console.log("track: "+response.tracks[0].previewURL)
+		      				var url = response.tracks[0].previewURL;
+		      				console.log(url);
 
-	    			updateSRC(url);	
+			    			updateSRC(url);	
 
-	    			// var audioDiv = $('<div>');
-	    			// audioDiv.append($('<audio>'));
-	    			// $("mediaSource").attr("src", url);
-	    			// $('audio').mediaelementplayer({
+			    			$("#music-heading").show();
+			    			$("#audioDiv").show();
+		    			}
+			    		else {
+		      				console.log("no tracks!!!!!!");
+		      				var url = "";
+		      				console.log(url);
 
-	    				
+			    			updateSRC(url);	
 
-	    			// })
+			    			$("#music-heading").hide();
+			    			$("#audioDiv").hide();
+			    		}
 
-			});
+				});
 		}
 
-  if (artistName === "" && zipCodeIn === "") {
-  	return;
-  	}
-  	else {
-  		if (zipCodeIn === "") {
-  			getTicketmasterInfo();
-  		}
-  		else {
-  			geoCodeAddress();
-  		}
-  	}
 
-  	});
+
+
+	  if (artistName === "" && zipCodeIn === "") {
+	  	return;
+	  	}
+	  	else {
+	  		if (zipCodeIn === "") {
+	  			getTicketmasterInfo();
+	  		}
+	  		else {
+	  			geoCodeAddress();
+	  		}
+	  	}
+
+	  	});
 
 }
 
 // Code updates the source of the artist sample music for each new submission
 function updateSRC(url){
-	console.log('here is it ' + url);
 	$(".mejs__offscreen").remove();
 	$(".mejs__container").remove();
 	$("#audioDiv").append("<audio id='music-player'><source id='mediaSource' type='audio/mp3'></audio></audio>");
@@ -267,12 +254,7 @@ function updateSRC(url){
 	$('audio').mediaelementplayer({
 		features: ['playpause', 'volume', 'progress', 'current', 'duration']
 	});
-
-
-
-
 };
-
 
 
 
@@ -295,9 +277,9 @@ function geoCodeAddress() {
 
     if (geoCodeStatus === 'OK') {
     	if (geoCodeResults.length > 0) {
-      gmLatitude = geoCodeResults[0].geometry.viewport.f.f;
-      gmLongitude = geoCodeResults[0].geometry.viewport.b.b;
-      getTicketmasterInfo();
+      		gmLatitude = geoCodeResults[0].geometry.viewport.f.f;
+      		gmLongitude = geoCodeResults[0].geometry.viewport.b.b;
+      		getTicketmasterInfo();
     	}
     }
     else {
@@ -320,19 +302,19 @@ function getTicketmasterInfo() {
 	// The results are sorted by event date.
 	if (gmLatitude === "" && gmLongitude === "") {
 		tmQueryURL = tmRootQueryURL	+ "?keyword=" + artistName
-																// + "&postalCode=" + zipCodeIn
-														   	+ "&sort=date,asc"
-													 	   	+ "&classificationName=music"
-																+ "&apikey=" + tmApiKey;
+			// + "&postalCode=" + zipCodeIn
+	   		+ "&sort=date,asc"
+ 	   		+ "&classificationName=music"
+			+ "&apikey=" + tmApiKey;
 	}
 	else {
 
 		tmQueryURL = tmRootQueryURL	+ "?keyword=" + artistName
-																+ "&radius=50"
-																+ "&latlong=" + gmLatitude + "," + gmLongitude
-													   		+ "&sort=date,asc"
-												 	   		+ "&classificationName=music"
-																+ "&apikey=" + tmApiKey;
+			+ "&radius=50"
+			+ "&latlong=" + gmLatitude + "," + gmLongitude
+	   		+ "&sort=date,asc"
+ 	   		+ "&classificationName=music"
+			+ "&apikey=" + tmApiKey;
 	}
 
 	$.ajax(
@@ -469,7 +451,7 @@ function displaySavedEvent(event) {
  	savedEvent = true;
 
 	tmQueryURL = tmRootQueryURL + "?id=" + event.currentTarget.attributes[2].nodeValue
-															+ "&apikey=" + tmApiKey;
+				+ "&apikey=" + tmApiKey;
 
 	$.ajax(
 	{
@@ -500,8 +482,8 @@ function savedEventUnavailable(event) {
 	$("#event-info").empty();
 
 	tmEventHTML =  "<div class='panel-heading'>";
-  tmEventHTML += "<h2 class='panel-title'>Ticketmaster Music Events</h2>";
-  tmEventHTML += "</div>";
+  	tmEventHTML += "<h2 class='panel-title'>Ticketmaster Music Events</h2>";
+  	tmEventHTML += "</div>";
 	tmEventHTML += "<table class='table'>";
 	tmEventHTML += "<tbody id='event-schedule'>";
 	tmEventHTML += "<tr>";
