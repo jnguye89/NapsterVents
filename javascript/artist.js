@@ -7,9 +7,8 @@ var zipCodeIn;
 var tmRootQueryURL = "https://app.ticketmaster.com/discovery/v2/events.json";
 var tmQueryURL = "";
 var tmApiKey = "Q60tg8AuoiJG7UpD8Lk2jUH1vutlxRd0";
-var gmLatitude;
-var gmLongitude;
-var savedEvent = false;
+var gmLatitude = "";
+var gmLongitude = "";
 var tmEventDate = "";
 var tmEventHTML = "";
 
@@ -22,6 +21,11 @@ var tmEventHTML = "";
 $("#nav-submit").on("click", function(event) {
 	event.preventDefault();
 	
+	artistNameIn = "";
+	artistName = "";
+	zipCodeIn = "";
+	gmLatitude = "";
+	gmLongitude = "";
 
 	// Get artist NAME from user
     artistNameIn = $("#artist-name").val().trim();
@@ -47,23 +51,15 @@ $("#nav-submit").on("click", function(event) {
 
 	$("#event-info").empty();
 	
-
-	artistName = "";
-	zipCodeIn = "";
-	gmLatitude = "";
-	gmLongitude = "";
-
 });
 
 
 // Get form value and run functions on artist favorite click
 $("#artist-fav").on("click", ".fav-artist-button", function(event) {
 
-	zipCodeIn = "";
-	gmLatitude = "";
-	gmLongitude = "";
+	artistNameIn = " ";
 
-   	var aName = event.currentTarget.attributes[1].value;
+ 	var aName = event.currentTarget.attributes[1].value;
 
 	artistInfo(aName);
 
@@ -75,6 +71,12 @@ $("#artist-fav").on("click", ".fav-artist-button", function(event) {
 
 // Get form value and run functions on event favorite click
 $("#event-fav").on("click", ".fav-event-button", function(event) {
+
+	artistNameIn = "";
+	artistName = "";
+	zipCodeIn = "";
+	gmLatitude = "";
+	gmLongitude = "";
 
 	var eventArtist = event.currentTarget.attributes[3].nodeValue
 
@@ -89,6 +91,7 @@ $("#event-fav").on("click", ".fav-event-button", function(event) {
 	}
 
 	displaySavedEvent(event);
+
 })
 
 
@@ -317,7 +320,9 @@ function getTicketmasterInfo(tmArtistName) {
 	  		displayNoEvents(tmArtistName);
 	  	}
 		  else {
-	  		displayEvents(json);
+		  	if (artistNameIn !=="" || zipCodeIn !== "") {
+		  		displayEvents(json);
+		  	}
 	  		favoriteEventButton();
 	  	}
 	           },
@@ -376,19 +381,19 @@ function displayEvents(tmEvents) {
 		// Build the HTML to display the Ticketmaster music event information
 		tmEventHTML += "<tr>";
 		tmEventHTML += "<td>" + tmEvents._embedded.events[i].name + "</td>";
-		tmEventHTML += "<td>" + tmEvents._embedded.events[i]._embedded.venues[0].name + "</td>";
+		if (tmEvents._embedded.events[i]._embedded.venues[0].name === undefined) {
+			tmEventHTML += "<td>Unavailable</td>";
+		}
+		else {
+			tmEventHTML += "<td>" + tmEvents._embedded.events[i]._embedded.venues[0].name + "</td>";
+		}
 		tmEventHTML	+= "<td>" + tmEvents._embedded.events[i]._embedded.venues[0].city.name + ", " + tmEventState + "</td>";
 		tmEventHTML += "<td>" + moment(tmEvents._embedded.events[i].dates.start.localDate).format("MMMM Do YYYY") + "</td>";
 		tmEventHTML	+= "<td><a href=" + tmEvents._embedded.events[i].url + " target=_blank>Tickets</a></td>";
-		
-		if (!savedEvent) {
-			tmEventHTML += "<td><button type='button' class='btn btn-primary btn-block save-event-submit' data-toggle='tooltip' title='Save This Music Event' data-artist-name='" + artistName + "'" + "data-event-artist='" + tmEvents._embedded.events[i].name + "' data-event-id='" + tmEvents._embedded.events[i].id + "'><span class='glyphicon glyphicon-heart-empty'></span></button></td>";
-		}
+		tmEventHTML += "<td><button type='button' class='btn btn-primary btn-block save-event-submit' data-toggle='tooltip' title='Save This Music Event' data-artist-name='" + artistName + "'" + "data-event-artist='" + tmEvents._embedded.events[i].name + "' data-event-id='" + tmEvents._embedded.events[i].id + "'><span class='glyphicon glyphicon-heart-empty'></span></button></td>";
 
 		tmEventHTML	+= "</tr>";
 	}
-
-	savedEvent = false;
 
 	tmEventHTML += "</tbody>";
 	tmEventHTML += "</table>";
@@ -436,8 +441,6 @@ function displayNoEvents(tmArtistName) {
 // Display the favorite music event info
 function displaySavedEvent(event) {
 
- 	savedEvent = true;
-
 	tmQueryURL = tmRootQueryURL + "?id=" + event.currentTarget.attributes[2].nodeValue
 															+ "&apikey=" + tmApiKey;
 
@@ -454,7 +457,51 @@ function displaySavedEvent(event) {
 	  		savedEventUnavailable(event);
 	  	}
 		  else {
-	  		displayEvents(json);
+				$("#event-info").empty();
+
+				tmEventHTML  = "<h2 class='panel-heading'>Ticketmaster Music Events</h2>";
+				tmEventHTML += "<table class='table'>";
+				tmEventHTML += "<thead>";
+				tmEventHTML += "<tr>"
+				tmEventHTML += "<th>Artist Name</th>";
+				tmEventHTML += "<th>Venue</th>";
+				tmEventHTML += "<th>Location</th>";
+				tmEventHTML += "<th>Date</th>";
+				tmEventHTML += "<th></th>";
+				tmEventHTML += "<th></th>";
+				tmEventHTML += "</tr>";
+				tmEventHTML += "</thead>";
+				tmEventHTML += "<tbody id='event-schedule'>";
+
+				// Music events outside the US don't have a state code property.
+				// In those cases use the country code in place of the state code.
+				if (json._embedded.events[0]._embedded.venues[0].country.countryCode === "US") {
+					tmEventState = json._embedded.events[0]._embedded.venues[0].state.stateCode;
+				}
+				else {
+					tmEventState = json._embedded.events[0]._embedded.venues[0].country.countryCode;
+				}
+
+				// Build the HTML to display the Ticketmaster music event information
+				tmEventHTML += "<tr>";
+				tmEventHTML += "<td>" + json._embedded.events[0].name + "</td>";
+				if (json._embedded.events[0]._embedded.venues[0].name === undefined) {
+					tmEventHTML += "<td>Unavailable</td>";
+				}
+				else {
+					tmEventHTML += "<td>" + json._embedded.events[0]._embedded.venues[0].name + "</td>";
+				}
+				tmEventHTML += "<td>" + json._embedded.events[0]._embedded.venues[0].name + "</td>";
+				tmEventHTML	+= "<td>" + json._embedded.events[0]._embedded.venues[0].city.name + ", " + tmEventState + "</td>";
+				tmEventHTML += "<td>" + moment(json._embedded.events[0].dates.start.localDate).format("MMMM Do YYYY") + "</td>";
+				tmEventHTML	+= "<td><a href=" + json._embedded.events[0].url + " target=_blank>Tickets</a></td>";
+				tmEventHTML	+= "</tr>";
+				tmEventHTML += "</tbody>";
+				tmEventHTML += "</table>";
+
+				// Add the Ticketmaster music event information to the web page HTML
+				$("#event-info").append(tmEventHTML);
+
 	  	}
 	           },
 	  error: function(xhr, status, err) {
