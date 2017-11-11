@@ -98,6 +98,11 @@ $("#event-fav").on("click", ".fav-event-button", function(event) {
     	$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
     	$("#artist-button").empty();
     	$("#artist-info").empty();
+    	var url = "";
+		updateSRC(url);	
+
+		$("#music-heading").hide();
+		$("#audioDiv").hide();
 	}
 
 	displaySavedEvent(event);
