@@ -65,6 +65,9 @@ $("#nav-submit").on("click", function(event) {
 $("#artist-fav").on("click", ".fav-artist-button", function(event) {
 
 	artistNameIn = " ";
+	zipCodeIn = "";
+	gmLatitude = "";
+	gmLongitude = "";
 
  	var aName = event.currentTarget.attributes[1].value;
 
@@ -489,7 +492,6 @@ function displaySavedEvent(event) {
 				else {
 					tmEventHTML += "<td>" + json._embedded.events[0]._embedded.venues[0].name + "</td>";
 				}
-				tmEventHTML += "<td>" + json._embedded.events[0]._embedded.venues[0].name + "</td>";
 				tmEventHTML	+= "<td>" + json._embedded.events[0]._embedded.venues[0].city.name + ", " + tmEventState + "</td>";
 				tmEventHTML += "<td>" + moment(json._embedded.events[0].dates.start.localDate).format("MMMM Do YYYY") + "</td>";
 				tmEventHTML	+= "<td><a href=" + json._embedded.events[0].url + " target=_blank>Tickets</a></td>";
