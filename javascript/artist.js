@@ -43,7 +43,14 @@ $("#nav-submit").on("click", function(event) {
     	$("#artist-pic").html("<img id='artist-picture' class='img-responsive' src='images/napster.gif'>");
     	$("#artist-button").empty();
     	$("#artist-info").empty();
+    	var url = "";
+		updateSRC(url);	
+
+		$("#music-heading").hide();
+		$("#audioDiv").hide();
+
     	artistName = "";
+
     	if (zipCodeIn !== "") {
     		geoCodeAddress();
     	}
@@ -108,11 +115,9 @@ function artistInfo(artist) {
     $("#artist-info").empty();
 
     var artistEncoded = encodeURIComponent(artist);
-    console.log(artistEncoded);
 
     // Send API query to Napster
 	var queryURL = "https://api.napster.com/v2.2/search?apikey=YTk0ODZlZTktNjIxMy00ZWQ1LTgwYzQtMDk5NmVjYjBlY2Vm&query="+artistEncoded+"&type=artist";
-	console.log(queryURL);
     $.ajax({
       url: queryURL,
       method: "GET"
@@ -201,19 +206,14 @@ function artistInfo(artist) {
 		     
 			  });
 
-				console.log(response);
 			  	var music = response.search.data.artists[0].links.topTracks.href
 			  	var queryURL = music +"?apikey=ZWZlOGIzZWQtMmJjYi00MDVkLWJjYmItNzhhNDAyM2IxMDU3";
-		    	console.log(queryURL);
 		    	$.ajax({
 	        		url: queryURL,
 	        		method: "GET"
 	      			}).done(function(response) {
 	      				if (response.tracks.length > 0){
-		      				console.log(response);
-		      				console.log("track: "+response.tracks[0].previewURL)
 		      				var url = response.tracks[0].previewURL;
-		      				console.log(url);
 
 			    			updateSRC(url);	
 
@@ -221,9 +221,7 @@ function artistInfo(artist) {
 			    			$("#audioDiv").show();
 		    			}
 			    		else {
-		      				console.log("no tracks!!!!!!");
 		      				var url = "";
-		      				console.log(url);
 
 			    			updateSRC(url);	
 
@@ -517,8 +515,8 @@ function savedEventUnavailable(event) {
 	$("#event-info").empty();
 
 	tmEventHTML =  "<div class='panel-heading'>";
-  tmEventHTML += "<h2 class='panel-title'>Ticketmaster Music Events</h2>";
-  tmEventHTML += "</div>";
+  	tmEventHTML += "<h2 class='panel-title'>Ticketmaster Music Events</h2>";
+  	tmEventHTML += "</div>";
 	tmEventHTML += "<table class='table'>";
 	tmEventHTML += "<tbody id='event-schedule'>";
 	tmEventHTML += "<tr>";
